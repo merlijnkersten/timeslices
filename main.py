@@ -7,13 +7,13 @@ import os
 # Import own packages from other script
 from analysis_functions import import_load_generation, import_cross_border_files, find_import_export, assign_seasons, assign_daynite, assign_ts, create_load_duration_graph, create_seasonal_load_duration_graph, create_daynite_load_duration_graph, get_statistics, get_all_statistics, generate_prices_csv, import_prices, fmt_col
 
-load_path = r"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/timeslice_analysis/data/load 2015-2021.csv"
-generation_path = r"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/timeslice_analysis/data/generation 2015-2021.csv"
-import_export_paths = [f"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/timeslice_analysis/data/cross border {year}.csv" for year in range(2015, 2022)]
-price_path = r"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/timeslice_analysis/data/prices 2015-2021.csv"
+load_path = r"C:/Users/czpkersten/Documents/timeslices/data/load 2015-2021.csv"
+generation_path = r"C:/Users/czpkersten/Documents/timeslices/data/generation 2015-2021.csv"
+import_export_paths = [f"C:/Users/czpkersten/Documents/timeslices/data/cross border {year}.csv" for year in range(2015, 2022)]
+price_path = r"C:/Users/czpkersten/Documents/timeslices/data/prices 2015-2021.csv"
 #price_paths = [f"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/timeslice_analysis/data/prices {year}.xls" for year in range(2015,2022)]
 
-directory = r"C:/Users/Merlijn Kersten/Documents/Univerzita Karlova/Timeslice analysis/"
+directory = r"C:/Users/czpkersten/Documents/timeslices-output/"
 
 load_generation_df = import_load_generation(load_path, generation_path)
 

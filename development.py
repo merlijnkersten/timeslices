@@ -1,8 +1,3 @@
-'''
-
-
-'''
-
 from time import strftime
 import pandas as pd
 import datetime as dt
@@ -95,6 +90,9 @@ def set_month(df):
         12 : 'December'
     }
     return df['Month'].map(month_dct)
+
+def combine_timeslices(df, col_1, col_2):
+    return df[[col_1, col_2]].agg('-'.join, axis=1)
 
 
 '''
