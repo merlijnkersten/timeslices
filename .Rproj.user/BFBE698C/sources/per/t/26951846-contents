@@ -1,0 +1,7 @@
+library(tidyverse)
+
+PATH = "C:/Users/czpkersten/Documents/timeslices/data/generation 2015-2021.csv"
+
+load = read_csv2(PATH, skip=2)
+
+head(load)
