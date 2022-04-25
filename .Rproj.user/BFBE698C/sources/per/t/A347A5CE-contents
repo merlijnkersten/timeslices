@@ -1,0 +1,15 @@
+library(tidyverse)
+
+PATH <- "C:/Users/czpkersten/Desktop/pez.csv"
+
+table <- read_csv(PATH)
+
+table_l <- pivot_longer(table, cols=3:10, names_to="year", values_to="value")
+# table_l <- table %>% pivot_longer(cols=3:10, names_to="year", values_to="value")
+
+table_w <- pivot_wider(table_l, names_from=scenario, values_from=value)
+# table_w <- table_l %>% pivot_wider(names_from=scenario, values_from=value)
+
+OUT_PATH <- "C:/Users/czpkersten/Desktop/pez_t.csv"
+
+table_w %>% write_csv(OUT_PATH)
