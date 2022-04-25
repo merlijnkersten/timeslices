@@ -1,7 +1,7 @@
 from time import strftime
 import pandas as pd
 import datetime as dt
-
+import numpy as np
 
 def set_weekday_weekend(df):
     public_holidays = [
@@ -160,4 +160,43 @@ df['Daynite8'] = set_daynite_8(df)
 print(df['Daynite8'])
 
 print(df['Month'])#.dt.strftime('%B'))
+
+
+##### MONDAY 25 APRIL #####
+
+def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, title, axs):
+    '''
+    df: dataframe with plotting data,
+    ts_list: list of timeslices to plot,
+    column: which dataframe column to plot,
+    ttl: title of plot,
+    axs: matplotlib.pyplot axis
+    '''
+
+    linestyle_dct = {
+        'Night' : 'solid',
+        'Day' : 'dashed',
+        'Peak' : 'dotted'
+    }
+
+    colour_dct = {
+        'Spring' : 'limegreen',
+        'Summer' : 'gold',
+        'Autumn' : 'orangered',
+        'Winter' : 'cornflowerblue'
+    }
+
+    for ts in ts_lst:
+        value_a = ts[0]
+        value_b = ts[1]
+        label_text = f'{value_a}, {value_b}'
+        mask = (df[column_a] == value_a) & (df[column_b] == value_b)
+        data = df[mask][plot_column].sort_values(ascending=False)
+        y = np.linspace(0, 1, len(data))
+        axs.plot(y, data, label=label_text, c=colour_dct[value_a], ls=linestyle_dct[value_b])
+    
+    axs.legend()
+    axs.set_title(title)
+    axs.set_xlabel('Annual percentage')
+
 

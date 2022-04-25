@@ -3,29 +3,21 @@ import itertools
 import matplotlib.pyplot as plt
 
 # Lists of seasonal timeslices
-spring_ts = ['1. ZN', '1. ZP', '1. ZD']
-summer_ts = ['2. SN', '2. SP', '2. SD']
-autumn_ts = ['3. FN', '3. FP', '3. FD']
-winter_ts = ['4. WN', '4. WP', '4. WD']
-
-season_ts = [
-    'Spring', 'Summer', 'Autumn', 'Winter',
-    'Weekday', 'Weekend'
-    'Spring weekday', 'Summer weekday', 'Autumn weekday', 'Winter weekday',
-    'Spring weekend', 'Summer weekend', 'Autumn weekend', 'Winter weekend',
-    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-]
+daynites = ['Night', 'Day', 'Peak']
+#           [('Spring', 'Night'), ('Spring', 'Day'), ('Spring', 'Peak')]
+spring_ts = [('Spring', i) for i in daynites]
+summer_ts = [('Summer', i) for i in daynites]
+autumn_ts = [('Autumn', i) for i in daynites]
+winter_ts = [('Winter', i) for i in daynites]
 
 # Lists of daynite timeslices
-night_ts = ['1. ZN', '2. SN', '3. FN', '4. WN']
-day_ts = ['1. ZD', '2. SD', '3. FD', '4. WD']
-peak_ts = ['1. ZP', '2. SP', '3. FP', '4. WP']
+seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
+#          [('Spring', 'Night'), ('Summer', 'Night'), ('Autumn', 'Night'), ('Winter', 'Night')]
+night_ts = [(i, 'Night') for i in seasons]
+day_ts = [(i, 'Day') for i in seasons]
+peak_ts = [(i, 'Peak') for i in seasons]
 
-daynite_ts = [
-    'Night', 'Day', 'Peak',
-    'N1', 'N2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6',
-    'H00', 'H01', 'H02', 'H03', 'H04', 'H05', 'H06', 'H07', 'H08', 'H09', 'H10', 'H11', 'H12', 'H13', 'H14', 'H15', 'H16', 'H17', 'H18', 'H19', 'H20', 'H21', 'H22', 'H23'
-]
+
 
 # Full list of time slices
 ts_lst = ['1. ZN', '1. ZP', '1. ZD', 
@@ -344,7 +336,7 @@ def assign_ts(df):
     return df['Season'].map(seasons_map) + df['Daynite'].map(daynite_map)    
 
 
-def create_load_duration_graph(df, ts_lst, column, ttl, axs, season_col, daynite_col):
+def create_load_duration_graph(df, ts_lst, column, ttl, axs):
     '''
     df: dataframe with plotting data,
     ts_list: list of timeslices to plot,
@@ -354,23 +346,22 @@ def create_load_duration_graph(df, ts_lst, column, ttl, axs, season_col, daynite
     '''
 
     linestyle_dct = {
-        'Night' : 'solid',
-        'Day' : 'dashed',
-        'Peak' : 'dotted',
+        'N' : 'solid',
+        'D' : 'dashed',
+        'P' : 'dotted'
     }
 
     colour_dct = {
-        'Spring' : 'limegreen',
-        'Summer' : 'gold',
-        'Autumn' : 'orangered',
-        'Winter' : 'cornflowerblue'
+        'Z' : 'limegreen',
+        'S' : 'gold',
+        'F' : 'orangered',
+        'W' : 'cornflowerblue'
     }
 
-    for ts in ts_lst:
-        mask = (df[season_col]==ts[0]) & (df[daynite_col]==ts[1])
-        data = sorted(list(df[mask][column]),reverse=True)
+    for ts in ts_lst:    
+        data = sorted(list(df[df['TS']==ts][column]),reverse=True)
         data_len = len(data)
-        y = [(i+1)/data_len for i in range(data_len)] #Change by linspace numpy thing? 
+        y = [(i+1)/data_len for i in range(data_len)]
         axs.plot(y, data, label=ts, c=colour_dct[ts[3]], ls=linestyle_dct[ts[4]])
         axs.legend()
         axs.set_title(ttl)
@@ -378,10 +369,6 @@ def create_load_duration_graph(df, ts_lst, column, ttl, axs, season_col, daynite
     
 
 def create_seasonal_load_duration_graph(df, column, directory):
-
-
-
-
     ts = [spring_ts, summer_ts, autumn_ts, winter_ts]
     name = ['Spring', 'Summer', 'Autumn', 'Winter']
     pos = [0, 1, 2, 3]
@@ -398,20 +385,8 @@ def create_seasonal_load_duration_graph(df, column, directory):
     plt.show()
 
 def create_daynite_load_duration_graph(df, column, directory):
-    
-    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-    ts_lst = [
-        list(itertools.product(seasons, ['Night'])),
-        list(itertools.product(seasons, ['Day'])),
-        list(itertools.product(seasons, ['Peak']))
-    ]
-
-    fig, axs = plt.subplots(1, len(ts_lst)+1, sharey=True, figsize=(10,5))
-
-    i = 0
-    for ts in ts_lst:
-        create_load_duration_graph(df, ts, column, ts[0][1])
-
+        
+    ts = [night_ts, day_ts, peak_ts]
     name = ['Night', 'Day', 'Peak']
     pos = [0, 1, 2]
 
@@ -430,7 +405,8 @@ def get_statistics(df, ts, column, directory):
 
     data = df[df['TS']==ts][column]
     dct = {
-                 f'{column}' : f'{ts_dct[ts[3]]} {ts_dct[ts[4]].lower()}',
+                    'Column' : str(column),
+                 'Timeslice' : f'{ts_dct[ts[3]]} {ts_dct[ts[4]].lower()}',
                       'Mean' : round(data.mean(), 2),
         'Standard deviation' : round(data.std(), 2),
                    'Minimum' : round(data.min(), 2),
