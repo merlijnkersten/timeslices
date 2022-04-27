@@ -6,12 +6,48 @@ import itertools
 import matplotlib.pyplot as plt
 import os
 
+
 from VARIABLES import GENERATION_PATH, LOAD_PATH, DIRECTORY
 
 def set_weekday_weekend(df):
-    public_holidays = [
-        #TODO create list of Czech public holidays
+    years = range(2015, 2022)
+    holidays = [
+        (1,1),  # New Years
+        (5,1),  # Labour Day
+        (5,8),  # Liberation from Fascism
+        (6,5),  # Cyril and Methodius
+        (7, 6),  # Burning at Stake of Jan Hus
+        (9, 28), # Czech statehood day
+        (10, 28), # Establishment of Czechslovak Republic
+        (11, 17), # Freedom and democracy day
+        (12, 24), # Christmas Eve
+        (12, 25), # Christmas day
+        (12, 26) # Chirstmas day
+        # Plus Good Friday and Easter Monday: deal with seperately.
     ]
+    
+    public_holidays = []
+    for d in holidays:
+        # For every date in holidays, add that date to the public holidays list for every year 2015-2021.
+        public_holidays.extend([dt.date(year, d[0], d[1]) for year in years])
+
+    easter_dates = [
+        (2016, 3, 25), # Good Friday (from 2016)
+        (2017, 4, 14),
+        (2018, 3, 30),
+        (2019, 4, 19),
+        (2020, 4, 10),
+        (2021, 4, 2),
+        (2015, 4, 6), # Easter Monday 
+        (2015, 3, 28),
+        (2017, 4, 17),
+        (2018, 4, 12),
+        (2019, 4, 22),
+        (2020, 4, 13),
+        (2021, 4, 5)
+    ]
+    public_holidays.extend([dt.date(d[0], d[1], d[2]) for d in easter_dates])
+
     day_dct = {}
 
     for day in pd.date_range(start='2015/01/01', end='2021/12/31'):
@@ -288,8 +324,12 @@ def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, axs,
         'Day-3' : 's',    # square
         'Day-4' : 'd',    # diamond
         'Day-5' : '+',    # plus
-        'Day-6' : 'x'     # x
+        'Day-6' : 'x',    # x
 
+        'Spring' : 'solid',
+        'Summer' : 'dashed',
+        'Autumn' : 'dotted',
+        'Winter' : 'dashdot'
     }
 
     colour_dct = {
@@ -319,6 +359,15 @@ def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, axs,
         'October' : '#ffff99',
         'November' : '#fdbf6f',
         'December' : '#6a3d9a',
+
+        'Night-1' : '#1f77b4', 
+        'Night-2' : '#ff7f0e', 
+        'Day-1' : '#2ca02c', 
+        'Day-2' : '#d62728', 
+        'Day-3' : '#9467bd', 
+        'Day-4' : '#e377c2', 
+        'Day-5' : '#bcbd22', 
+        'Day-6' : '#17becf'
     }
 
     for ts in ts_lst:
@@ -405,4 +454,49 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
     plt.show()
 
 
+def seasonal_daynite8_analysis(df, column, directory):
+
+    statistics = []
+
+    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
+    daynite8 = ['Night-1', 'Night-2', 'Day-1', 'Day-2', 'Day-3', 'Day-4', 'Day-5', 'Day-6']
+    #weekday = ['Weekend', 'Weekday']
+    #daynite = ['Night', 'Peak', 'Day']
+
+    b = seasons
+    a = daynite8
+    #[('Spring weekday', 'Night'), (...), ...]
+
+    fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5))
+    i = 0
+
+    for dn8 in a:
+        ts = list(itertools.product([dn8], b))
+        create_load_duration_graph(df, ts, 'Daynite8', 'Season', column, axs[i%2, i//2], 'b')
+
+        statistics.append(get_statistics(df, ts, 'Season', 'Daynite8', column))
+
+        i += 1
+
+    axs[0,0].set_ylabel(column)
+    axs[1,0].set_ylabel(column)
+    
+    plt.tight_layout()
+
+    sub_directory = f"{directory}Output {fmt(column)}/"
+    if not os.path.exists(sub_directory):
+        os.makedirs(sub_directory)
+
+    fig_path = f'{sub_directory}Load duration curve {fmt(column)} seasons weekdays.png'
+    plt.savefig(fig_path, dpi=300, format='png')
+
+    csv_path = f'{sub_directory}Statistics {fmt(column)} seasons weekdays.csv'
+    pd.DataFrame(statistics).to_csv(csv_path, index=False)
+
+    plt.show()
+
+
+
 seasonal_weekday_daynite_analysis(df, "Generation sum [MW]", DIRECTORY)
+
+seasonal_daynite8_analysis(df, "Generation sum [MW]", DIRECTORY)
