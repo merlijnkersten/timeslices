@@ -5,11 +5,12 @@ import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 import os
+import seaborn as sns
 
 
 from VARIABLES import GENERATION_PATH, LOAD_PATH, DIRECTORY
 
-def set_weekday_weekend(df):
+def assign_weekday_weekend(df):
     years = range(2015, 2022)
     holidays = [
         (1,1),  # New Years
@@ -29,7 +30,7 @@ def set_weekday_weekend(df):
     public_holidays = []
     for d in holidays:
         # For every date in holidays, add that date to the public holidays list for every year 2015-2021.
-        public_holidays.extend([dt.date(year, d[0], d[1]) for year in years])
+        public_holidays.extend([pd.Timestamp(year, d[0], d[1]) for year in years])
 
     easter_dates = [
         (2016, 3, 25), # Good Friday (from 2016)
@@ -46,12 +47,13 @@ def set_weekday_weekend(df):
         (2020, 4, 13),
         (2021, 4, 5)
     ]
-    public_holidays.extend([dt.date(d[0], d[1], d[2]) for d in easter_dates])
+    public_holidays.extend([pd.Timestamp(d[0], d[1], d[2]) for d in easter_dates])
 
     day_dct = {}
 
     for day in pd.date_range(start='2015/01/01', end='2021/12/31'):
         if day in public_holidays:
+            # Results in future warning: what to do about this?
             day_dct[day] = 'Weekend'
         elif day.weekday() in [5, 6]:
             # Saturday == 5, Sunday == 6
@@ -60,6 +62,9 @@ def set_weekday_weekend(df):
             # It must be a weekday
             day_dct[day] = 'Weekday'
     
+    #for day in public_holidays:
+    #    day_dct[day] = 'Weekend'
+
     df['Weekday weekend'] =  df['Date'].map(day_dct)
     #df['Season weekday-weekend'] = df['Season'] + df['Weekday weekend'].lower()
     return df['Weekday weekend'] #, df['Season weekday-weekend]
@@ -67,7 +72,7 @@ def set_weekday_weekend(df):
 # set month/hour through df.index.month / .hour eazy
 
 
-def set_daynite_8(df):
+def assign_daynite_8(df):
     hour_dct = {
         0 : 'Night-1', 
         1 : 'Night-1', 
@@ -102,7 +107,7 @@ def set_daynite_8(df):
 
     # Could do something similar for monts M1, M2, etc
 
-def set_hour(df):
+def assign_hour(df):
     def zero_pad(i):
         if len(str(i)) == 1:
             return '0' + str(i)
@@ -115,7 +120,7 @@ def set_hour(df):
 
     return df['Hour'].map(hour_dct)
 
-def set_month(df):
+def assign_month(df):
     month_dct = {
         1 : 'January',
         2 : 'February',
@@ -229,46 +234,42 @@ def assign_seasons(df):
     # Map dates to season and return this series.
     return df['Date'].astype(str).map(dates_to_season)
 
-def assign_daynite(df):
+def assign_daynite(df, column):
     '''
     Divides data, for every season, into night (between 20:00-08:00, 12h), peak (highest load, 2h) and day (rest, 10h)
     df: Dataframe with 'Hour', 'Season', 'Load [MW]' columns.
     returns: timeslice series
     '''
+    mask = (df['Hour'] < 8) | (df['Hour'] >= 20)
+    night_ids = list(df[mask].index)
 
-    # Find a more elegant way to do this
-
-    # Date between 20:00-08:00 is saved in a night dataframe, other day is saved in a day_and_peak dataframe.
-    night_df = df[(df['Hour']<8) | (df['Hour']>=20)].copy(deep=True)
-    night_df['Daynite'] = 'Night'
-    day_and_peak_df = df[(df['Hour']>=8) & (df['Hour']<20)].copy(deep=True)
-    
-    # For every season, the two hours with the highest load are found and saved in a peak dataframe
-    peak_dfs = []
-    for season in ['Spring', 'Summer', 'Autumn', 'Winter']:
-        season_df = day_and_peak_df[day_and_peak_df['Season']==season].copy(deep=True)
-        length = season_df.shape[0]
-        percentile = (1/24)*2
+    daypeak_df = df[~mask].reset_index()
+    peak_ids = []
+    for index, sub_df in daypeak_df.groupby(by=[column]):
+        percentile = 1/12
+        length = sub_df.shape[0]
         n = round(length * percentile)
-        peak_dfs.append(season_df.nlargest(n, 'Load [MW]').copy(deep=True))
-    peak_df = pd.concat(peak_dfs)
-    peak_df['Daynite'] = 'Peak'
-    # The peak data is removed from the day_and_peak dataframe, 
-    peak_ids = peak_df.index
-    day_df = day_and_peak_df.drop(labels=peak_ids, axis=0).copy(deep=True)
-    day_df['Daynite'] = 'Day'
+        peaks = list(sub_df.nlargest(n, 'Load [MW]')['Date and time'])
+        peak_ids.extend(peaks)
+      
+    day_ids = set(daypeak_df['Date and time']) - set(peak_ids)
 
-    # Ensure that no data was lost by checkin if the length of the partial dataframes equals the original dataframe
-    test = night_df.shape[0] + peak_df.shape[0] + day_df.shape[0] == df.shape[0]
+    daynite_dct = dict()
+    for index in night_ids:
+        daynite_dct[index] = 'Night'
+
+    for index in peak_ids: 
+        daynite_dct[index] = 'Peak'
+    
+    for index in day_ids:
+        daynite_dct[index] = 'Day'
+    
+    indices_sum = len(night_ids) + len(peak_ids) + len(day_ids)
+    test = indices_sum == df.shape[0]
     if not test:
-        raise Exception('Timeslice dataframes do not have the correct length')
-
-    # Create a single daynite dataframe and extract the 'Daynite' column
-    daynite_df = pd.concat([night_df, peak_df, day_df])['Daynite']
-
-    # Merge the daynite series with the given dataframe, and return the merged dataframe.
-    return pd.merge(df, daynite_df, left_index=True, right_index=True)
-
+        raise Exception(f'DataFrame and Night/Peak/Day index arrays do not have same length: {df.shape[0]} vs {indices_sum}')         
+    
+    return df.index.map(daynite_dct)
 
 
 def fmt(i):
@@ -287,13 +288,23 @@ def fmt(i):
 
 df = import_load_generation(LOAD_PATH, GENERATION_PATH)
 
-df['Weekday'] = set_weekday_weekend(df)
+df['Weekday'] = assign_weekday_weekend(df)
 
-df['Daynite8'] = set_daynite_8(df)
+df['Daynite8'] = assign_daynite_8(df)
+
+df['Month_long'] = assign_month(df)
+
+df['Hour_long'] = assign_hour(df)
 
 df['Season'] = assign_seasons(df)
 
-df = assign_daynite(df)
+df['Daynite SEASON'] = assign_daynite(df, 'Season')
+
+df['Daynite MONTH'] = assign_daynite(df, 'Month')
+
+df['Daynite WEEKDAY'] = assign_daynite(df, 'Weekday')
+
+df['Daynite DAY'] = assign_daynite(df, 'Date')
 
 df['Season weekday'] = combine_timeslices(df, 'Season', 'Weekday')
 
@@ -389,7 +400,7 @@ def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, axs,
     axs.set_xlabel('Annual percentage')
 
 
-def get_statistics(df, ts_lst, column_a, column_b, statistics_column):
+def get_statistics(df, ts_lst, column_a, column_b, statistics_column, statistics_lst):
     
     for ts in ts_lst:
         value_a = ts[0]
@@ -398,7 +409,7 @@ def get_statistics(df, ts_lst, column_a, column_b, statistics_column):
         mask = (df[column_a] == value_a) & (df[column_b] == value_b)
         data = df[mask][statistics_column]
 
-        dct = {
+        statistics_lst.append({
             'Column' : statistics_column.lower(),
             'Timeslice' : f'{value_a.lower()} {value_b.lower()}',
             'Mean' : fmt(data.mean()),
@@ -408,95 +419,40 @@ def get_statistics(df, ts_lst, column_a, column_b, statistics_column):
             'Median' : fmt(data.median()),
             '90% percentile' : fmt(data.quantile(0.9)),
             'Maximum' : fmt(data.max())
-        }
-    
-    return dct
+        })
 
-
-def seasonal_weekday_daynite_analysis(df, column, directory):
+def timeslice_analysis(df, column_a, column_b, statistics_column, directory):
 
     statistics = []
 
-    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-    weekday = ['Weekend', 'Weekday']
-    daynite = ['Night', 'Peak', 'Day']
+    values_a = df[column_a].unique()
+    values_b = df[column_b].unique()
 
-    a = [' '.join(i) for i in itertools.product(seasons, weekday)]
-    b = daynite
-    #[('Spring weekday', 'Night'), (...), ...]
+    for value in values_a:
+        ts = itertools.product([value], values_b)
+        get_statistics(df, ts, column_a, column_b, statistics_column, statistics)
 
-    fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5))
-    i = 0
-
-    for season_weekday in a:
-        ts = list(itertools.product([season_weekday], b))
-        create_load_duration_graph(df, ts, 'Season weekday', 'Daynite', column, axs[i%2, i//2], 'b')
-
-        statistics.append(get_statistics(df, ts, 'Season weekday', 'Daynite', column))
-
-        i += 1
-
-    axs[0,0].set_ylabel(column)
-    axs[1,0].set_ylabel(column)
-
-    plt.tight_layout()
-
-    sub_directory = f"{directory}Output {fmt(column)}/"
+    sub_directory = f"{directory}Output {fmt(statistics_column)}/"
     if not os.path.exists(sub_directory):
         os.makedirs(sub_directory)
 
-    fig_path = f'{sub_directory}Load duration curve {fmt(column)} seasons weekdays.png'
-    plt.savefig(fig_path, dpi=300, format='png')
-
-    csv_path = f'{sub_directory}Statistics {fmt(column)} seasons weekdays.csv'
+    csv_path = f'{sub_directory}Statistics-{fmt(statistics_column)}-{fmt(column_a)}-{fmt(column_b)}.csv'
     pd.DataFrame(statistics).to_csv(csv_path, index=False)
 
-    plt.show()
+#TEST
+timeslice_analysis(df, 'Season', 'Daynite SEASON', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season', 'Daynite MONTH', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season', 'Daynite DAY', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season', 'Daynite8', 'Load [MW]', DIRECTORY)
+
+timeslice_analysis(df, 'Season weekday', 'Daynite SEASON', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season weekday', 'Daynite MONTH', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season weekday', 'Daynite DAY', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Season weekday', 'Daynite8', 'Load [MW]', DIRECTORY)
 
 
-def seasonal_daynite8_analysis(df, column, directory):
-
-    statistics = []
-
-    seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-    daynite8 = ['Night-1', 'Night-2', 'Day-1', 'Day-2', 'Day-3', 'Day-4', 'Day-5', 'Day-6']
-    #weekday = ['Weekend', 'Weekday']
-    #daynite = ['Night', 'Peak', 'Day']
-
-    b = seasons
-    a = daynite8
-    #[('Spring weekday', 'Night'), (...), ...]
-
-    fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5))
-    i = 0
-
-    for dn8 in a:
-        ts = list(itertools.product([dn8], b))
-        create_load_duration_graph(df, ts, 'Daynite8', 'Season', column, axs[i%2, i//2], 'b')
-
-        statistics.append(get_statistics(df, ts, 'Season', 'Daynite8', column))
-
-        i += 1
-
-    axs[0,0].set_ylabel(column)
-    axs[1,0].set_ylabel(column)
-    
-    plt.tight_layout()
-
-    sub_directory = f"{directory}Output {fmt(column)}/"
-    if not os.path.exists(sub_directory):
-        os.makedirs(sub_directory)
-
-    fig_path = f'{sub_directory}Load duration curve {fmt(column)} seasons weekdays.png'
-    plt.savefig(fig_path, dpi=300, format='png')
-
-    csv_path = f'{sub_directory}Statistics {fmt(column)} seasons weekdays.csv'
-    pd.DataFrame(statistics).to_csv(csv_path, index=False)
-
-    plt.show()
-
-
-
-seasonal_weekday_daynite_analysis(df, "Generation sum [MW]", DIRECTORY)
-
-seasonal_daynite8_analysis(df, "Generation sum [MW]", DIRECTORY)
+timeslice_analysis(df, 'Month_long', 'Weekday', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Month_long', 'Daynite MONTH', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Month_long', 'Daynite DAY', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Month_long', 'Daynite8', 'Load [MW]', DIRECTORY)
+timeslice_analysis(df, 'Month_long', 'Hour_long', 'Load [MW]', DIRECTORY)
