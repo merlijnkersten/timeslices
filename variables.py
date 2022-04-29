@@ -5,3 +5,8 @@ GENERATION_PATH = r"C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/genera
 
 DIRECTORY =  r"C:/Users/Merlijn Kersten/Documents/UK/timeslices-outputs/"
 
+PRICE_PATH = r"C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/prices 2015-2021.csv"
+
+# FIX
+IMPORT_EXPORT_PATHS = [f"C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/cross border {year}.csv" for year in range(2015, 2022)]
+
