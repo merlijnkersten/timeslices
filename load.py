@@ -142,7 +142,7 @@ def find_import_export(row, kind):
     '''
 
 
-def cross_border_files(lst):
+def generate_cross_border_csv(lst):
     '''
     lst: list of paths
     loads CSVs and combines them into a single, polished file.
@@ -185,11 +185,19 @@ def cross_border_files(lst):
     # Create import and export columns using the find_import_export function
     df['Imports [MW]'] = df.apply(lambda i: find_import_export(i, 'import'), axis=1)
     df['Exports [MW]'] = df.apply(lambda i: find_import_export(i, 'export'), axis=1)
+    
+    return df
+
+
+def cross_border(cross_border_path):
+    df = pd.read_csv(cross_border_path)
+    df["Date and time"] = pd.to_datetime(df["Date and time"], format=r"%Y-%m-%d %H:%M:%S")
+    df.set_index("Date and time", inplace=True)                             
 
     return df
 
 
-def generate_prices_csv(prices_paths, output_path):
+def generate_price_csv(prices_paths, output_path):
     '''
     reads prices XLSs and returns a formatted, polished dataframe
     prices_paths: list of paths to annual prices XLS from 
@@ -226,7 +234,7 @@ def generate_prices_csv(prices_paths, output_path):
     pd.concat(df_lst).to_csv(output_path)
 
 
-def prices(path):
+def price(path):
     '''
     Function to import the file created in the create_prices_csv function
     Returns the CSV as a formatted Dataframe

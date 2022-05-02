@@ -1,10 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
-directory = r"C:/Users/Merlijn Kersten/Documents/UK/timeslices-outputs/Output load/"
+directory = "C:/Users/czpkersten/Documents/timeslices-output/Output exports"
 
-files = [
+os.chdir(directory)
+
+files = os.listdir()
+
+directory_og = r"C:/Users/Merlijn Kersten/Documents/UK/timeslices-outputs/Output load/"
+
+files_og = [
     'Statistics load month_long daynite day.csv',
     'Statistics load month_long daynite month.csv',
     'Statistics load month_long daynite8.csv',
@@ -22,8 +29,8 @@ files = [
 
 for file in files:
 
-    path = directory + file
-    df = pd.read_csv(path)
+    #path = directory + file
+    df = pd.read_csv(file)
 
     sns.scatterplot(x='Mean', y='Timeslice', data=df, color='b', label='Mean')
     sns.scatterplot(x='Median', y='Timeslice', data=df, color='r', label='Median')
@@ -41,5 +48,5 @@ for file in files:
     plt.title(file.replace('.csv',''))
     plt.grid()
     plt.tight_layout()
-    plt.savefig(path.replace('.csv', '.png'), dpi=300, format='png')
+    plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
     plt.show()

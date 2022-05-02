@@ -129,11 +129,11 @@ def timeslice_analysis(df, column_a, column_b, statistics_column, directory):
         ts = itertools.product([value], values_b)
         get_statistics(df, ts, column_a, column_b, statistics_column, statistics)
 
-    sub_directory = f"{directory}Output {fmt(statistics_column)}/"
-    if not os.path.exists(sub_directory):
-        os.makedirs(sub_directory)
+    #sub_directory = os.path.join(directory, f"Output {fmt(statistics_column)}")
+    #if not os.path.exists(sub_directory):
+    #    os.makedirs(sub_directory)
 
-    csv_path = f'{sub_directory}Statistics {fmt(statistics_column)} - {fmt(column_a)} - {fmt(column_b)}.csv'
+    csv_path = os.path.join(directory, f'Statistics {fmt(statistics_column)} - {fmt(column_a)} - {fmt(column_b)}.csv')
     pd.DataFrame(statistics).to_csv(csv_path, index=False)
 
 def timeslice_analysis_2(df, statistics_column, directory):
@@ -203,10 +203,10 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
     #if not os.path.exists(sub_directory):
     #    os.makedirs(sub_directory)
 
-    fig_path = f'{directory}Load duration curve {fmt(column)} seasons weekdays.png'
+    fig_path = os.path.join(directory, f'Load duration curve {fmt(column)} seasons weekdays.png')
     plt.savefig(fig_path, dpi=300, format='png')
 
-    csv_path = f'{directory}Statistics {fmt(column)} seasons weekdays.csv'
+    csv_path = os.path.join(directory, f'Statistics {fmt(column)} seasons weekdays.csv')
     pd.DataFrame(statistics).to_csv(csv_path, index=False)
 
     plt.show()
