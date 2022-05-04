@@ -153,6 +153,19 @@ def weekday(df):
 # set month/hour through df.index.month / .hour eazy
 
 
+def weekday_alt(df):
+    day_dct = {
+        0 : 'Monday',
+        1 : 'Tuesday',
+        2 : 'Wednesday',
+        3 : 'Thursday',
+        4 : 'Friday',
+        5 : 'Saturday',
+        6 : 'Sunday'
+    }
+    return df.index.weekday.map(day_dct)
+
+
 def daynite_8(df):
     hour_dct = {
         0 : 'Night-1', 
@@ -188,6 +201,35 @@ def daynite_8(df):
 
     # Could do something similar for monts M1, M2, etc
 
+
+def daynite_4(df):
+    hour_dct = {
+        0 : 'Night', 
+        1 : 'Night', 
+        2 : 'Night', 
+        3 : 'Night', 
+        4 : 'Night', 
+        5 : 'Night', 
+        6 : 'Morning',
+        7 : 'Morning',
+        8 : 'Morning', 
+        9 : 'Morning', 
+        10 : 'Afternoon', 
+        11 : 'Afternoon', 
+        12 : 'Afternoon', 
+        13 : 'Afternoon', 
+        14 : 'Afternoon', 
+        15 : 'Afternoon', 
+        16 : 'Evening', 
+        17 : 'Evening', 
+        18 : 'Evening', 
+        19 : 'Evening',
+        20 : 'Night', 
+        21 : 'Night', 
+        22 : 'Night', 
+        23 : 'Night'
+    }
+    return df['Hour'].map(hour_dct)
 
 def hour(df):
     def zero_pad(i):

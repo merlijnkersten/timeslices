@@ -26,4 +26,4 @@ PRICE_PATH = os.path.join(data_path, 'prices 2015-2021.csv')
 
 CROSS_BORDER_PATH = os.path.join(data_path, 'cross border 2015-2021.csv')
 
-DIRECTORY =  os.path.join(os.path.dirname(cwd), 'timeslices-output')
+DIRECTORY =  os.path.join(os.path.dirname(cwd), 'timeslices-output-2')

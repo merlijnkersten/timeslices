@@ -1,0 +1,51 @@
+Length,2365701
+,
+Season,
+Winter,19296
+Summer,15288
+Spring,13090
+Autumn,12985
+Weekday,
+Working day,41664
+Weekend,18995
+,
+Daynite,
+Night,30347
+Day,27786
+Peak,2526
+,
+Season weekday,
+Winter Working day,13200
+Summer Working day,10656
+Autumn Working day,8976
+Spring Working day,8832
+Winter Weekend,6096
+Summer Weekend,4632
+Spring Weekend,4258
+Autumn Weekend,4009
+,
+Full time slice,
+Winter Working day Night,6600
+Winter Working day Day,6050
+Summer Working day Night,5328
+Summer Working day Day,4884
+Autumn Working day Night,4488
+Spring Working day Night,4416
+Autumn Working day Day,4114
+Spring Working day Day,4048
+Winter Weekend Night,3048
+Winter Weekend Day,2794
+Summer Weekend Night,2316
+Summer Weekend Day,2123
+Spring Weekend Night,2122
+Autumn Weekend Night,2029
+Spring Weekend Day,1958
+Autumn Weekend Day,1815
+Winter Working day Peak,550
+Summer Working day Peak,444
+Autumn Working day Peak,374
+Spring Working day Peak,368
+Winter Weekend Peak,254
+Summer Weekend Peak,193
+Spring Weekend Peak,178
+Autumn Weekend Peak,165

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-directory = "C:/Users/czpkersten/Documents/timeslices-output/Output exports"
+directory = "C:/Users/czpkersten/Documents/timeslices-output/Output load"
 
 os.chdir(directory)
 
