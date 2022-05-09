@@ -35,12 +35,12 @@ combined_df['Daynite4'] = assign.daynite_4(combined_df)
 combined_df['Weekday alt'] = assign.weekday_alt(combined_df)
 combined_df['Season weekday alt'] = assign.combine_timeslices(combined_df, 'Season', 'Weekday alt')
 
-combined_df['Full time slice'] = assign.combine_timeslices(combined_df, 'Season weekday', 'Daynite')
+combined_df['Season weekday daynite'] = assign.combine_timeslices(combined_df, 'Season weekday', 'Daynite')
+combined_df['Season daynite'] = assign.combine_timeslices(combined_df, 'Season', 'Daynite')
 
-PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021.csv"
-combined_df.to_csv(PATH)
 
-quit()
+#PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021.csv"
+#combined_df.to_csv(PATH)
 
 #column_lst = ['Generation sum [MW]', 'Net import [MW]', 'Imports [MW]', 'Exports [MW]', 'Price [EUR/MWh]', 'Price [CZK/MWh]']
 column_lst = ['Load [MW]', 'Imports [MW]', 'Exports [MW]', 'Price [CZK/MWh]', 'Price [EUR/MWh]']
@@ -57,7 +57,7 @@ for column in column_lst:
     #analyse.timeslice_analysis(combined_df, 'Season', 'Daynite', column, sub_directory)
     #analyse.timeslice_analysis(combined_df, 'Season', 'Daynite8', column, sub_directory)
     #analyse.timeslice_analysis(combined_df, 'Season', 'Hour long', column, sub_directory)
-    analyse.timeslice_analysis(combined_df, 'Season weekday', 'Daynite', column, sub_directory)
+    analyse.timeslice_analysis(combined_df, 'Season', 'Daynite', column, sub_directory)
     #analyse.timeslice_analysis(combined_df, 'Month long', 'Daynite', column, sub_directory)
     #analyse.timeslice_analysis(combined_df, 'Month long', 'Daynite8', column, sub_directory)
     #analyse.timeslice_analysis(combined_df, 'Month long', 'Weekday', column, sub_directory)
