@@ -1,51 +1,52 @@
-Length,2365701
-,
-Season,
-Winter,19296
-Summer,15288
-Spring,13090
-Autumn,12985
-Weekday,
-Working day,41664
-Weekend,18995
-,
-Daynite,
-Night,30347
-Day,27786
-Peak,2526
-,
-Season weekday,
-Winter Working day,13200
-Summer Working day,10656
-Autumn Working day,8976
-Spring Working day,8832
-Winter Weekend,6096
-Summer Weekend,4632
-Spring Weekend,4258
-Autumn Weekend,4009
-,
-Full time slice,
-Winter Working day Night,6600
-Winter Working day Day,6050
-Summer Working day Night,5328
-Summer Working day Day,4884
-Autumn Working day Night,4488
-Spring Working day Night,4416
-Autumn Working day Day,4114
-Spring Working day Day,4048
-Winter Weekend Night,3048
-Winter Weekend Day,2794
-Summer Weekend Night,2316
-Summer Weekend Day,2123
-Spring Weekend Night,2122
-Autumn Weekend Night,2029
-Spring Weekend Day,1958
-Autumn Weekend Day,1815
-Winter Working day Peak,550
-Summer Working day Peak,444
-Autumn Working day Peak,374
-Spring Working day Peak,368
-Winter Weekend Peak,254
-Summer Weekend Peak,193
-Spring Weekend Peak,178
-Autumn Weekend Peak,165
+Length,60659,,,
+,,,,
+Season,TRUE,TRUE,,
+Winter,19296,31.81%,,
+Summer,15288,25.20%,,
+Spring,13090,21.58%,,
+Autumn,12985,21.41%,,
+,,,,
+Weekday,TRUE,TRUE,,
+Working day,41664,68.69%,71%,
+Weekend,18995,31.31%,29%,
+,,,,
+Daynite,TRUE,TRUE,,
+Night,30347,50.03%,50.00%,
+Day,27786,45.81%,45.83%,
+Peak,2526,4.16%,4.17%,
+,,,,
+Season weekday,TRUE,TRUE,,
+Winter Working day,13200,21.76%,21.85%,0.088%
+Summer Working day,10656,17.57%,17.31%,-0.256%
+Autumn Working day,8976,14.80%,14.82%,0.025%
+Spring Working day,8832,14.56%,14.70%,0.143%
+Winter Weekend,6096,10.05%,9.96%,-0.088%
+Summer Weekend,4632,7.64%,7.89%,0.256%
+Spring Weekend,4258,7.02%,6.76%,-0.262%
+Autumn Weekend,4009,6.61%,6.70%,0.094%
+,,,,
+Full time slice,TRUE,TRUE,,
+Winter Working day Night,6600,10.88%,,
+Winter Working day Day,6050,9.97%,,
+Summer Working day Night,5328,8.78%,,
+Summer Working day Day,4884,8.05%,,
+Autumn Working day Night,4488,7.40%,,
+Spring Working day Night,4416,7.28%,,
+Autumn Working day Day,4114,6.78%,,
+Spring Working day Day,4048,6.67%,,
+Winter Weekend Night,3048,5.02%,,
+Winter Weekend Day,2794,4.61%,,
+Summer Weekend Night,2316,3.82%,,
+Summer Weekend Day,2123,3.50%,,
+Spring Weekend Night,2122,3.50%,,
+Autumn Weekend Night,2029,3.34%,,
+Spring Weekend Day,1958,3.23%,,
+Autumn Weekend Day,1815,2.99%,,
+Winter Working day Peak,550,0.91%,,
+Summer Working day Peak,444,0.73%,,
+Autumn Working day Peak,374,0.62%,,
+Spring Working day Peak,368,0.61%,,
+Winter Weekend Peak,254,0.42%,,
+Summer Weekend Peak,193,0.32%,,
+Spring Weekend Peak,178,0.29%,,
+Autumn Weekend Peak,165,0.27%,,
