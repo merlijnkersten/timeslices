@@ -6,26 +6,7 @@ import os
 directory = "C:/Users/czpkersten/Documents/timeslices-output/Output load"
 
 os.chdir(directory)
-
-files = os.listdir()
-
-directory_og = r"C:/Users/Merlijn Kersten/Documents/UK/timeslices-outputs/Output load/"
-
-files_og = [
-    'Statistics load month_long daynite day.csv',
-    'Statistics load month_long daynite month.csv',
-    'Statistics load month_long daynite8.csv',
-    'Statistics load month_long hour_long.csv',
-    'Statistics load month_long weekday.csv',
-    'Statistics load season daynite8.csv',
-    'Statistics load season daynite day.csv',
-    'Statistics load season daynite month.csv',
-    'Statistics load season daynite season.csv',
-    'Statistics load season weekday daynite8.csv',
-    'Statistics load season weekday daynite day.csv',
-    'Statistics load season weekday daynite month.csv',
-    'Statistics load season weekday daynite season.csv',
-]
+files = os.listdir(directory)
 
 for file in files:
 
