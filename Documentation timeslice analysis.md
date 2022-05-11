@@ -2,6 +2,25 @@
 
 _merlijn, April-May 2022_
 
+Table of contents
+- Introduction
+  - Original time slices
+  - Potential new timeslices
+  - 
+- Method
+  - Data sources
+  - Data cleaning
+  - Data transformation
+  - Analysis types
+    - FFT
+	- 
+- Results
+  - Graphs with TS overlayed
+  - Year fractions
+  - 
+- Conclusion
+- Appendix: guide to code
+
 Original timeslices:
 - Season:
   - Spring (_R_): 15 March-31 May,
@@ -11,7 +30,7 @@ Original timeslices:
 - Daynite:
   - Night: all hours between 20:00-08:00, 
   - Day: all hours between 08:00-20:00, except: 
-  - Peak: the 
+  - Peak: the hour with the highest load during the day.
 
 New time slices:
 - Month
@@ -32,7 +51,7 @@ New time slices:
   - Evening
 - Weekday
   - Working day, 
-  - weekend day
+  - weekend day (including public holidays),
 - Hours
   - H00, H01, H02, H03, H04, H05, H06, H07, H08, H09, H10, H11, H12, H13, H14, H15, H16, H17, H18, H19, H20, H21, H22, H23
 
