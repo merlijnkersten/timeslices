@@ -196,3 +196,7 @@ fig.legend(loc='right')
 plt.tight_layout
 plt.savefig(OUTPUT_PATH+'swd+mean.png', dpi=300, format='png')
 plt.show()
+
+
+#TODO Annual graph with ten/twenty-day rolling average
+#https://towardsdatascience.com/moving-averages-in-python-16170e20f6c
