@@ -89,6 +89,8 @@ The following data sources were used:
 | Prices              | https://www.ote-cr.cz/en/statistics/yearly-market-report | 2015-2021, day ahead price.       |
 | Imports and exports | https://www.ceps.cz/en/all-data#CrossborderPowerFlows    | 2015-2021, hourly average values. |
 
+<discuss why this period was chosen, limitations to it>
+
 From these columns, total generation, total import, total export, and net export were calculated. The data sources were combined into a single data file, which can be found in the Github repository [<insert link>](link).
 
 The load, import, export and price data was then categorised into the two original time slices (seasonm daynite) and <x> distinct new timeslices:
@@ -107,7 +109,18 @@ These timeslices were then combined to into groups .
 |Name | Group | #    |
 | -------- |  --------- | ---- |
 | Null | Season-daynite | 4 * 3 = 12 |
-| A | ? to add |  |
+| A | Season - extended daynite 1 | 4 * 8 = 24 |
+|  | Season - extended daynite 2 | 4 * 4 = 16 |
+|  | Season - hour               | 4 * 24 = 96 |
+|  | Season - weekday - daynite | 4 * 2 * 3 = 24 |
+|  | Season - weekday - extended daynite 2 | 4 * 2 * 4 = 32 |
+|  | Month - daynite             | 12 * 3 = 36 |
+|  | Month - extended daynite 1  | 12 * 8 = 96 |
+|  | Month - extended daynite 2  | 12 * 4 = 48 |
+|  | Month - weekday | 12 * 2 = 48 |
+|  | Month - weekday - daynite | 12 * 2 * 3 = 72 | 
+|  | | |
+|  | <add others> |  |
 
 These combinations of timeslices were then plotted for load, import, export, and price time series and their key statistics (mean, standard deviation, percentiles) were recorded. 
 
@@ -135,7 +148,7 @@ These combinations of timeslices were then plotted for load, import, export, and
 
 
 
-
+When analysing the statistics for the different groups of timeslices, the main focus was to determine whether these timeslices accurately captured the major periodic trends in the data, and 
 
 ## Fast Fourier transform
 
@@ -148,6 +161,8 @@ To aid the visual analysis of the data, I performed a Fourier transforms of the 
 <insert distribution graphs>
 
 # Discussion
+
+Monthly timeslices showed a lot of repetition-it did not really capture more of the yearly variability than the seasonal timeslices, whilst many months had nearly identical average imports, exports and loads (e.g. July and August, June and September, etc). To some extent, this is also true for the Spring and Autumn seasonal timeslices: perhaps these could be merged and omitted.
 
 <insert distribution-time slice overlay>
 
@@ -187,4 +202,12 @@ To aid the visual analysis of the data, I performed a Fourier transforms of the 
 
 
 # Appendix
+
+All of the code used to import, analyse, and visualise the data in this report can be found on [Github](link). There are two versions of the code: version 0.1 consists of some initial scripts used to create simple load duration graphs, whereas version 0.1 is a more fully-fledged suite of scripts that contain more generalised functions. The basic structure is as follows:
+
+1.  `load.py`: these functions are used to import and clean the data,
+2. `assign.py`: this script contains functions that assign the various timeslices to the time series,
+3. `analyse.py`: these functions generate visualisations and statistics,
+
+All these functions can be run from the `main.py` file or individually in their respective scripts. The idea behind organising the functions and scripts like this is to make it easier to maintain and extend the functions. To this end, most functions are written in a very generalised manner, which should make it easy to add support for additional timeslices, variables, and other improvements.
 
