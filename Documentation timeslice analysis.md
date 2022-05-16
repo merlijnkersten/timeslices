@@ -33,7 +33,7 @@ Table of contents
 
 TIMES uses timeslices to represent temporal variability in variables.  The current version of the TIMES-CZ model uses twelve timeslices: four seasonal timeslices (spring, summer, autumn, winter) and three daynite timeslices (night, day, peak). Increasing the number of timeslices increases the accuracy of the model, as there are annual variations in the data that have a different frequency than seasonal/daily <rephrase>. 
 
-Milan and Lukáš suggested some alternative timeslices. These included a working day-weekend day timeslice,  a monthly timeslice, an hourly time slice, and an extended daynite timeslice.
+Milan and Lukáš suggested some alternative timeslices. The basic idea is to test different types of timeslices on load, export, import and price data to see which timeslices we can use to enrich the TIMES-CZ model. 
 
 <idea is to test out different timeslices>
 
@@ -82,14 +82,18 @@ When picking a combination of timeslices, the primary concerns are whether they 
 
 The following data sources were used:
 
-| Data                | Source                                                   | Scope                             |
-| ------------------- | -------------------------------------------------------- | --------------------------------- |
-| Load                | https://www.ceps.cz/en/all-data#Load                     | 2015-2021, hourly average values. |
-| Generation          | https://www.ceps.cz/en/all-data#Generation               | 2015-2021, hourly average values. |
-| Prices              | https://www.ote-cr.cz/en/statistics/yearly-market-report | 2015-2021, day ahead price.       |
-| Imports and exports | https://www.ceps.cz/en/all-data#CrossborderPowerFlows    | 2015-2021, hourly average values. |
+| Data                | Source                                                   | Scope                              |
+| ------------------- | -------------------------------------------------------- | ---------------------------------- |
+| Load                | https://www.ceps.cz/en/all-data#Load                     | 2015-2021, hourly average values.  |
+| Generation          | https://www.ceps.cz/en/all-data#Generation               | 2015-2021, hourly average values.  |
+| Prices              | https://www.ote-cr.cz/en/statistics/yearly-market-report | 2015-2021, hourly day-ahead price. |
+| Imports and exports | https://www.ceps.cz/en/all-data#CrossborderPowerFlows    | 2015-2021, hourly average values.  |
 
-<discuss why this period was chosen, limitations to it>
+2015 is the base year of the TIMES-CZ model, and 2020 is an <x?> year; 2021 is the last year for which full data is available. 
+
+<discussion: 2015 saw high imports and exports compared to the other years: exports and imports were 17.2% and 24.5% higher, respectively, than in 2016-2021.>
+
+<discussion: prices periodicity>
 
 From these columns, total generation, total import, total export, and net export were calculated. The data sources were combined into a single data file, which can be found in the Github repository [<insert link>](link).
 
