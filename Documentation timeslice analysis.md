@@ -106,21 +106,21 @@ The load, import, export and price data was then categorised into the two origin
 
 These timeslices were then combined to into groups .
 
-|Name | Group | #    |
-| -------- |  --------- | ---- |
-| Null | Season-daynite | 4 * 3 = 12 |
-| A | Season - extended daynite 1 | 4 * 8 = 24 |
-|  | Season - extended daynite 2 | 4 * 4 = 16 |
-|  | Season - hour               | 4 * 24 = 96 |
-|  | Season - weekday - daynite | 4 * 2 * 3 = 24 |
-|  | Season - weekday - extended daynite 2 | 4 * 2 * 4 = 32 |
-|  | Month - daynite             | 12 * 3 = 36 |
-|  | Month - extended daynite 1  | 12 * 8 = 96 |
-|  | Month - extended daynite 2  | 12 * 4 = 48 |
-|  | Month - weekday | 12 * 2 = 48 |
-|  | Month - weekday - daynite | 12 * 2 * 3 = 72 | 
-|  | | |
-|  | <add others> |  |
+| Name | Group                                   | #               |
+| ---- |  -------------------------------------- | --------------- |
+| Null | Season - daynite                        | 4 * 3 = 12      |
+| A    | Season - extended daynite 1             | 4 * 8 = 24      |
+| B    | Season - extended daynite 2             | 4 * 4 = 16      |
+| C    | Season - hour                           | 4 * 24 = 96     |
+| D    | Season - weekday 1 - daynite            | 4 * 2 * 3 = 24  |
+| E    | Season - weekday 1 - extended daynite 2 | 4 * 2 * 4 = 32  |
+| F    | Season - weekday 2                      | 4 * 7 = 28      |
+| G    | Season - weekday 2 - daynite            | 4 * 7 * 3 = 84  | 
+| H    | Month - daynite                         | 12 * 3 = 36     |
+| I    | Month - extended daynite 1              | 12 * 8 = 96     |
+| J    | Month - extended daynite 2              | 12 * 4 = 48     |
+| K    | Month - weekday                         | 12 * 2 = 24     | 
+| L    | Month - weekday - daynite               | 12 * 2 * 3 = 72 | 
 
 These combinations of timeslices were then plotted for load, import, export, and price time series and their key statistics (mean, standard deviation, percentiles) were recorded. 
 
@@ -128,23 +128,23 @@ These combinations of timeslices were then plotted for load, import, export, and
 
 
 
-| Time slice | Extended daynite 1 | Extended daynite 2 |
-| ---------- | ------------------ | ------------------ |
-| Night-1    | 20:00-01:00        | <did I do this>    |
-| Night-2    | 02:00-07:00        |                    |
-| Day-1      | 08:00-09:00        |                    |
-| Day-2      | 10:00-11:00        |                    |
-| Day-3      | 12:00-13:00        |                    |
-| Day-4      | 14:00-15:00        |                    |
-| Day-5      | 16:00-17:00        |                    |
-| Day-5      | 18:00-19:00        |                    |
+| Time slice | Extended daynite 1 |
+| ---------- | ------------------ |
+| Night-1    | 20:00-01:00        |
+| Night-2    | 02:00-07:00        |
+| Day-1      | 08:00-09:00        |
+| Day-2      | 10:00-11:00        |
+| Day-3      | 12:00-13:00        |
+| Day-4      | 14:00-15:00        |
+| Day-5      | 16:00-17:00        |
+| Day-5      | 18:00-19:00        |
 
-| Time slice | Extended daynite <x> |
-| ---------- | -------------------- |
-| Night      | 20:00-05:00          |
-| Morning    | 06:00-09:00          |
-| Afternoon  | 10:00-15:00          |
-| Evening    | 16:00-19:00          |
+| Time slice | Extended daynite 2 |
+| ---------- | ------------------ |
+| Night      | 20:00-05:00        |
+| Morning    | 06:00-09:00        |
+| Afternoon  | 10:00-15:00        |
+| Evening    | 16:00-19:00        |
 
 
 
@@ -166,38 +166,38 @@ Monthly timeslices showed a lot of repetition-it did not really capture more of 
 
 <insert distribution-time slice overlay>
 
-| Season  | Weekday |  Daynite   | TS   | Annual share (%) |
-| -----------  | -------------- |  ------------ | ---- | ---------------- |
-| Spring (R) | Working day (L) |  Night (N) | RLN   |              |
-|            |   | Day (D)   | RLD   |          |
-|            |   | Peak (P)  | RLP   |            |
-|            | Weekend day (H) |  Night (N) | RHN   |              |
-|            |   | Day (D)   | RHD   |          |
-|            |   | Peak (P)  | RHP   |            |
-| Summer (S) | Working day (L)  | Night (N) | SLN   |              |
-|            |   |  Day (D)   | SLD   |           |
-|            |   | Peak (P)  | PLD   |      |
-|            | Weekend day (H)  | Night (N) | SHN   |              |
-|            |   | Day (D)   | SHD   |             |
-|            |   | Peak (P)  | PHD   |              |
-| Fall (F)   | Working day (L) | Night (N) | FLN   |              |
-|            |    | Day (D)   | FLD   |             |
-|            |    | Peak (P)  | FLP   |             |
-|            | Weekend day (H) | Night (N) | FHN   |              |
-|            |    | Day (D)   | FHD   |             |
-|            |    | Peak (P)  | FHP   |             |
-| Winter (W) | Working day (L) | Night (N) | WHN   |           |
-|            |    | Day (D)   | WHD   |              |
-|            |    | Peak (P)  | WHP   |            |
-|            | Weekend day (H) | Night (N) | WHN   |           |
-|            |    | Day (D)   | WHD   |              |
-|            |    | Peak (P)  | WHP   |            |
+| Season     | Weekday         | Daynite   | TS  | Annual share (%) |
+| ---------- | --------------- | ----------| --- | ---------------- |
+| Spring (R) | Working day (L) | Night (N) | RLN | 7.28             |
+|            |                 | Day (D)   | RLD | 6.67             |
+|            |                 | Peak (P)  | RLP | 0.607            |
+|            | Weekend day (H) | Night (N) | RHN | 3.50             |
+|            |                 | Day (D)   | RHD | 3.23             |
+|            |                 | Peak (P)  | RHP | 0.293            |
+| Summer (S) | Working day (L) | Night (N) | SLN | 8.78             |
+|            |                 | Day (D)   | SLD | 8.05             |
+|            |                 | Peak (P)  | SLP | 0.732            |
+|            | Weekend day (H) | Night (N) | SHN | 3.28             |
+|            |                 | Day (D)   | SHD | 3.50             |
+|            |                 | Peak (P)  | SHP | 0.318            |
+| Fall (F)   | Working day (L) | Night (N) | FLN | 7.40             |
+|            |                 | Day (D)   | FLD | 6.78             |
+|            |                 | Peak (P)  | FLP | 0.617            |
+|            | Weekend day (H) | Night (N) | FHN | 3.34             |
+|            |                 | Day (D)   | FHD | 2.99             |
+|            |                 | Peak (P)  | FHP | 0.272            |
+| Winter (W) | Working day (L) | Night (N) | WLN | 10.9             |
+|            |                 | Day (D)   | WLD | 9.97             |
+|            |                 | Peak (P)  | WLP | 0.907            |
+|            | Weekend day (H) | Night (N) | WHN | 5.02             |
+|            |                 | Day (D)   | WHD | 4.61             |
+|            |                 | Peak (P)  | WHP | 0.419            |
 
 ## Future ideas
 
 * Actually apply timeslices to model to see results,
 * Other, different timeslices?
-* 
+* Change daynite timeslots: 20-8 for night might be too long? Data suggests 22-6?
 
 
 
