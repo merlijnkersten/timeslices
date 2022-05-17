@@ -9,7 +9,7 @@ os.chdir(directory)
 files = os.listdir(directory)
 
 for file in files:
-
+    file = "C:/Users/czpkersten/Documents/timeslices-output/Output load/Statistics load - season weekday - daynite.csv"
     #path = directory + file
     df = pd.read_csv(file)
 
@@ -27,7 +27,9 @@ for file in files:
         sns.scatterplot(x=column, y='Timeslice', data=df, color='r', marker='x')
 
     plt.title(file.replace('.csv',''))
+    plt.title('Season - weekday - daynite')
     plt.grid()
     plt.tight_layout()
     plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
     plt.show()
+    quit()

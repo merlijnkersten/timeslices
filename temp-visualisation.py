@@ -51,7 +51,7 @@ colour_dct = {
         'December' : '#6a3d9a',
 }
 
-fig, axs = plt.subplots(1, 4, sharey=True, figsize=(10,5))
+fig, axs = plt.subplots(1, 4, sharey=True, figsize=(15,5))
 i = 0
 for var in vars:
     temp = df[df[var_col]==var]
@@ -86,8 +86,8 @@ mean = group.mean()
 q90 = group.quantile(0.9)
 q10 = group.quantile(0.1)
 x = temp[time_col].unique()
-plt.plot(x, mean)
-plt.fill_between(x, q10, q90, alpha=0.2)
+plt.plot(x, mean, color='tab:blue')
+plt.fill_between(x, q10, q90, alpha=0.2, color='dimgrey')
 plt.xticks([0, 6, 12, 18, 24])
 #axs[i].legend()
 plt.xlabel(time_col)
@@ -119,14 +119,17 @@ for var in vars:
     mean = group.mean()
     q75 = group.quantile(0.75)
     q25 = group.quantile(0.25)
+    q95 = group.quantile(0.95)
+    q05 = group.quantile(0.05)
     x = temp[time_col].unique()
     axes = axs[i%2, i//2]
     print(colour_dct[var])
     lbl = 'Mean' if i==0 else None
     axes.plot(x, mean, label=lbl, c='dimgrey')
     lbl = r'50% interval' if i==0 else None
-    axes.fill_between(x, q25, q75, alpha=0.2, color='dimgrey', label=lbl)
-
+    axes.fill_between(x, q25, q75, alpha=0.3, color='dimgrey', label=lbl)
+    lbl = r'90% interval' if i==0 else None
+    axes.fill_between(x, q05, q95, alpha=0.15, color='dimgrey', label=lbl)
     axes.set_xticks([0, 6, 12, 18, 24])
     #axs[i].legend()
     axes.set_title(var[0] + var[1:].lower())
@@ -135,18 +138,18 @@ for var in vars:
     i += 1
 
 # WINTER WORKING DAY
-axs[0,0].hlines(8714.58, 0, 7.5, color='tab:blue') # NIGHT
-axs[0,0].hlines(8714.58, 19.5, 24, color='tab:blue')
-axs[0,0].hlines(10284.11, 7.5, 8.5, color='tab:green') # DAY
-axs[0,0].hlines(10284.11, 9.5, 19.5, color='tab:green')
-axs[0,0].hlines(10535.77, 8.5, 9.5, color='tab:orange') # PEAK
+axs[0,0].hlines(8724.72, 0, 7.5, color='tab:blue') # NIGHT
+axs[0,0].hlines(8724.72, 19.5, 24, color='tab:blue')
+axs[0,0].hlines(10291.27, 7.5, 8.5, color='tab:green') # DAY
+axs[0,0].hlines(10291.27, 9.5, 19.5, color='tab:green')
+axs[0,0].hlines(10543.49, 8.5, 9.5, color='tab:orange') # PEAK
 
 # WINTER WEEKEND
-axs[1,0].hlines(7515.47, 0, 7.5, color='tab:blue')
-axs[1,0].hlines(7515.47, 19.5, 24, color='tab:blue')
-axs[1,0].hlines(8613.91, 7.5, 10.5, color='tab:green')
-axs[1,0].hlines(8613.91, 11.5, 19.5, color='tab:green')
-axs[1,0].hlines(8993.77, 10.5, 11.5, color='tab:orange')
+axs[1,0].hlines(7512.47, 0, 7.5, color='tab:blue')
+axs[1,0].hlines(7512.47, 19.5, 24, color='tab:blue')
+axs[1,0].hlines(8607.61, 7.5, 10.5, color='tab:green')
+axs[1,0].hlines(8607.61, 11.5, 19.5, color='tab:green')
+axs[1,0].hlines(8989.28, 10.5, 11.5, color='tab:orange')
 
 
 # SPRING WORKING DAY
@@ -157,8 +160,8 @@ axs[0,1].hlines(8919.02, 9.5, 19.5, color='tab:green')
 axs[0,1].hlines(9266.34, 8.5, 9.5, color='tab:orange') # PEAK
 
 # SPRING WEEKEND
-axs[1,1].hlines(6582.89, 0, 7.5, color='tab:blue') # NIGHT
-axs[1,1].hlines(6582.89, 19.5, 24, color='tab:blue')
+axs[1,1].hlines(6580.08, 0, 7.5, color='tab:blue') # NIGHT
+axs[1,1].hlines(6580.08, 19.5, 24, color='tab:blue')
 axs[1,1].hlines(7374.75, 7.5, 10.5, color='tab:green') # DAY
 axs[1,1].hlines(7374.75, 11.5, 19.5, color='tab:green')
 axs[1,1].hlines(7846.18, 10.5, 11.5, color='tab:orange') # PEAK
@@ -186,8 +189,8 @@ axs[0,3].hlines(9182.52, 9.5, 19.5, color='tab:green')
 axs[0,3].hlines(9462.33, 8.5, 9.5, color='tab:orange') # PEAK
 
 # AUTUMN WEEKEND
-axs[1,3].hlines(6617.86, 0, 7.5, color='tab:blue', label='Night') # NIGHT
-axs[1,3].hlines(6617.86, 19.5, 24, color='tab:blue')
+axs[1,3].hlines(6611.25, 0, 7.5, color='tab:blue', label='Night') # NIGHT
+axs[1,3].hlines(6611.25, 19.5, 24, color='tab:blue')
 axs[1,3].hlines(7636.36, 7.5, 10.5, color='tab:green', label='Day') # DAY
 axs[1,3].hlines(7636.36, 11.5, 19.5, color='tab:green')
 axs[1,3].hlines(8092.35, 10.5, 11.5, color='tab:orange', label='Peak') # PEAK
@@ -222,8 +225,8 @@ series_avg = series.rolling(window=wndw).mean()
 #xticks = [datetime(2021, i[0], i[1], 12, 00) for i in [(1, 1), (3, 1), (6, 1), (9, 1), (12, 1)]]
 col = column.replace(' [MW]', '').lower()
 fig, ax = plt.subplots(figsize=(10,5))
-ax.plot(series, label=f'Hourly {col}', alpha=0.2)
-ax.plot(series_avg, label=f'{str(wndw/24)}-day average {col}')
+ax.plot(series, label=f'Hourly {col}', alpha=0.2, color='dimgrey')
+ax.plot(series_avg, label=f'{int(wndw/24)}-day average {col}', color='tab:blue')
 #plt.fill_between(series_max.index, series_min, series_min, color='grey', alpha=0.5, label='Fill')
 ax.set_ylabel(column)
 ax.set_xticks([52608, 54768,56952,59160])
