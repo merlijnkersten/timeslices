@@ -230,6 +230,12 @@ def perform_fft(input, output, column):
     # get the one side frequency
     f_oneside = freq[:n_oneside]
 
+    # Frequencies in hours
+    t_h = 1/f_oneside / (60 * 60)
+
+    # Frequencies in days
+    t_d = 1/f_oneside / (60 * 60 * 24)
+
     # Save FFT as CSV
     dct = {
         'X': np.abs(X[:n_oneside])/n_oneside,
@@ -303,7 +309,7 @@ def plot_distribution(directory):
 
     for file in files:
         #path variable needed here?
-        
+
         df = pd.read_csv(file)
 
         sns.scatterplot(x='Mean', y='Timeslice', data=df, color='b', label='Mean')
