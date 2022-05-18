@@ -3,6 +3,7 @@ import itertools
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 # Import own packages from other script

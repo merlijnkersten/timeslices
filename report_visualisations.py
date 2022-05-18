@@ -1,10 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime 
-import numpy as np
-import calendar
 
+# Quick & dirty script for generating report visualisations
 
 INPUT_PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021.csv"
 OUTPUT_PATH = "C:/Users/czpkersten/Documents/timeslices-output/"
@@ -12,10 +9,11 @@ OUTPUT_PATH = "C:/Users/czpkersten/Documents/timeslices-output/"
 
 df = pd.read_csv(INPUT_PATH)
 
-#df.set_index('Date and time', inplace=True)
-
+# Pesky daylight-saving hours
 df = df[df['Hour'] <= 23]
 
+
+# 1. Seasoan (var_col) graph
 var_col = 'Season'
 time_col = 'Hour'
 value_col = 'Load [MW]'
@@ -26,29 +24,7 @@ colour_dct = {
         'Spring' : 'limegreen',
         'Summer' : 'gold',
         'Autumn' : 'orangered',
-        'Winter' : 'cornflowerblue',
-
-        'Spring Working day' : '#33a02c', 
-        'Spring Weekend' : '#b2df8a',
-        'Summer Working day' : '#ff7f00',
-        'Summer Weekend' : '#fdbf6f',
-        'Autumn Working day' : '#e31a1c',
-        'Autumn Weekend' : '#fb9a99',
-        'Winter Working day' : '#1f78b4',
-        'Winter Weekend' : '#a6cee3',
-
-        'January' : '#1f78b4', 
-        'February' : '#cab2d6',
-        'March' : '#a6cee3',
-        'April' : '#31a1c',
-        'May' : '#b2df8ae',
-        'June' : '#b15928',
-        'July' : '#ff7f00',
-        'August' : '#33a02c',
-        'September' : '#fb9a99',
-        'October' : '#ffff99',
-        'November' : '#fdbf6f',
-        'December' : '#6a3d9a',
+        'Winter' : 'cornflowerblue'
 }
 
 fig, axs = plt.subplots(1, 4, sharey=True, figsize=(15,5))
@@ -80,7 +56,7 @@ plt.savefig(OUTPUT_PATH+'mean.png', dpi=300, format='png')
 plt.show()
 
 
-# ANNUAL PLOT
+# 2. Annual average daily
 group = df.groupby(by=[time_col])[value_col]
 mean = group.mean()
 q90 = group.quantile(0.9)
@@ -101,6 +77,7 @@ fig_path = OUTPUT_PATH + 'Daily average annual.png'
 plt.savefig(fig_path, dpi=300, format='png')
 plt.show()
 
+# 3. Daily average load by season and weekday with timeslice imposed
 var_col = 'Season weekday'
 vars = ['Winter Working day',
 'Winter Weekend',
@@ -116,26 +93,31 @@ i = 0
 for var in vars:
     temp = df[df[var_col]==var]
     group = temp.groupby(by=[time_col])[value_col]
-    mean = group.mean()
-    q75 = group.quantile(0.75)
-    q25 = group.quantile(0.25)
-    q95 = group.quantile(0.95)
-    q05 = group.quantile(0.05)
+
     x = temp[time_col].unique()
     axes = axs[i%2, i//2]
-    print(colour_dct[var])
+
+    mean = group.mean()
     lbl = 'Mean' if i==0 else None
     axes.plot(x, mean, label=lbl, c='dimgrey')
+    
+    q75 = group.quantile(0.75)
+    q25 = group.quantile(0.25)
     lbl = r'50% interval' if i==0 else None
     axes.fill_between(x, q25, q75, alpha=0.3, color='dimgrey', label=lbl)
+    
+    q95 = group.quantile(0.95)
+    q05 = group.quantile(0.05)
     lbl = r'90% interval' if i==0 else None
     axes.fill_between(x, q05, q95, alpha=0.15, color='dimgrey', label=lbl)
+    
     axes.set_xticks([0, 6, 12, 18, 24])
-    #axs[i].legend()
     axes.set_title(var[0] + var[1:].lower())
     axes.grid()
-
+    
     i += 1
+
+# There's a better way to do this, but this was faster VVVV
 
 # WINTER WORKING DAY
 axs[0,0].hlines(8724.72, 0, 7.5, color='tab:blue') # NIGHT
@@ -195,8 +177,6 @@ axs[1,3].hlines(7636.36, 7.5, 10.5, color='tab:green', label='Day') # DAY
 axs[1,3].hlines(7636.36, 11.5, 19.5, color='tab:green')
 axs[1,3].hlines(8092.35, 10.5, 11.5, color='tab:orange', label='Peak') # PEAK
 
-
-
 axs[0,0].set_ylabel(value_col)
 axs[1,0].set_ylabel(value_col)
 axs[1,0].set_xlabel(time_col)
@@ -205,33 +185,28 @@ axs[1,2].set_xlabel(time_col)
 axs[1,3].set_xlabel(time_col)
 fig.subplots_adjust(right=0.84)
 fig.legend(loc='right')
-
-#plt.tight_layout()
-
 fig_path = OUTPUT_PATH + 'Seasonal weekday with daynite.png'
+
 plt.savefig(fig_path, dpi=300, format='png')
 plt.show()
 
-#TODO Annual graph with ten/twenty-day rolling average
+#4. Annual graph with twenty-five rolling average
 #https://towardsdatascience.com/moving-averages-in-python-16170e20f6c
 
 df2021 = df[df['Year']==2021]
 
 column = 'Load [MW]'
 series = df2021[column]
-wndw = 24*25 # Ten days
+wndw = 24*25 # Twenty five days
 series_avg = series.rolling(window=wndw).mean()
 
-#xticks = [datetime(2021, i[0], i[1], 12, 00) for i in [(1, 1), (3, 1), (6, 1), (9, 1), (12, 1)]]
 col = column.replace(' [MW]', '').lower()
 fig, ax = plt.subplots(figsize=(10,5))
 ax.plot(series, label=f'Hourly {col}', alpha=0.2, color='dimgrey')
 ax.plot(series_avg, label=f'{int(wndw/24)}-day average {col}', color='tab:blue')
-#plt.fill_between(series_max.index, series_min, series_min, color='grey', alpha=0.5, label='Fill')
 ax.set_ylabel(column)
 ax.set_xticks([52608, 54768,56952,59160])
 ax.set_xticklabels(['1 January', '1 April', '1 July','1 October'])
-#plt.xticklabels()
 ax.set_title(f'Hourly and rolling average {col} (2021)')
 plt.grid()
 plt.tight_layout()

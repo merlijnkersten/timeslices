@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from variables import GENERATION_PATH, LOAD_PATH, DIRECTORY
+from to_bin.variables import GENERATION_PATH, LOAD_PATH, DIRECTORY
 
 """
 # Lists of seasonal timeslices
