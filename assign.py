@@ -1,5 +1,6 @@
 '''
 Functions to assign timeslices to the time series.
+Most functions return the timeslices as a Pandas series.
 '''
 
 import itertools
@@ -118,7 +119,7 @@ def weekday_1(df):
         public_holidays.extend([pd.Timestamp(year, d[0], d[1]) for year in years])
 
     easter_dates = [
-        (2016, 3, 25), # Good Friday (from 2016)
+        (2016, 3, 25), # Good Friday (public holiday since 2016)
         (2017, 4, 14),
         (2018, 3, 30),
         (2019, 4, 19),
@@ -189,6 +190,7 @@ def daynite_8(df):
         22 : 'Night-1', 
         23 : 'Night-1'
     }
+    # To generate dictionary:
     # {k+8 : f'D{(k // 2) + 1}' for k in range(0,12)}
     # {k : 'N2' for k in range(0,8)}
     # {k : 'N1' for k in range(20,25)}
@@ -256,8 +258,12 @@ def month(df):
         11 : 'November',
         12 : 'December'
     }
+    # Could also do this with datetime or calendar package (but this was easier)
     return df['Month'].map(month_dct)
 
 
 def combine_timeslices(df, col_1, col_2):
+    '''
+    Combine the two timeslices in col_1 and col_2 into a single column, which is returned.
+    '''
     return df[[col_1, col_2]].agg(' '.join, axis=1)

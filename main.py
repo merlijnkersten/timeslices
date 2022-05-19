@@ -1,5 +1,5 @@
 '''
-Run script
+Run script, using functions from other scripts
 '''
 
 import itertools
@@ -10,7 +10,7 @@ import pandas as pd
 from scipy.fft import fft
 import seaborn as sns
 
-# Import own packages from other script
+# Import own packages from other scripts
 import load
 import assign
 import analyse

@@ -1,8 +1,14 @@
 '''
 Functions to analyse and visualise the data.
+
+To do: re-create code for generation load/etc duration graphs.
+  - Automatic plotting was difficult to get right (and not necessarily important).
+    work on it was therefore abandoned. 
+
 '''
 
 import itertools
+from multiprocessing.sharedctypes import Value
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -88,8 +94,10 @@ def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, axs,
 
         if variable == 'a':
             title_text, label_text = value_b, value_a
-        else:
+        elif variable== 'b':
             title_text, label_text = value_a, value_b
+        else:
+            raise ValueError(f"Variable is: {variable} ({type(variable)}), but must be 'a' or 'b'.")
         
         mask = (df[column_a] == value_a) & (df[column_b] == value_b)
         data = df[mask][plot_column].sort_values(ascending=False)
@@ -143,6 +151,8 @@ def timeslice_analysis(df, column_a, column_b, statistics_column, directory):
 def timeslice_analysis_2(df, statistics_column, directory):
     # TODO Recreate version WITH plotting!
     # EXAMPLE WITH Season weekday AS column_a AND Daynite AS column_b
+    print('Unfinished')
+    quit()
     statistics = []
 
     values_a = df['Season weekday 1'].unique()
@@ -185,7 +195,7 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
     b = daynite
     #[('Spring weekday', 'Night'), (...), ...]
 
-    fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5))
+    fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5), tight_layout=True)
     i = 0
 
     for season_weekday in a:
@@ -199,12 +209,6 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
 
     axs[0,0].set_ylabel(column)
     axs[1,0].set_ylabel(column)
-
-    plt.tight_layout()
-
-    #sub_directory = f"{directory}Output {fmt(column)}/"
-    #if not os.path.exists(sub_directory):
-    #    os.makedirs(sub_directory)
 
     fig_path = os.path.join(directory, f'Load duration curve {fmt(column)} seasons weekdays.png')
     plt.savefig(fig_path, dpi=300, format='png')
@@ -333,13 +337,13 @@ def plot_distribution(directory):
         sns.scatterplot(x='Median', y='Timeslice', data=df, color='r', label='Median')
 
         for sign in [1, -1]:
-            # Standard deviations
+            # Plot standard deviations
             pm = '+' if sign else '-'
             df[f'Mean{pm}SD'] = df['Mean'] + sign*df['Standard deviation']
             sns.scatterplot(x=f'Mean{pm}SD', y='Timeslice', data=df, color='b', marker='.')
 
         for column in ['Minimum', 'Maximum', '10% percentile', '90% percentile']:
-            # Statistical information
+            # Plot statistical information
             sns.scatterplot(x=column, y='Timeslice', data=df, color='r', marker='x')
 
         plt.title(file.replace('.csv','').lower())
