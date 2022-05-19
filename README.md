@@ -157,25 +157,24 @@ To aid the graphical analysis of the data, I performed a Fourier transforms of t
 
 ## Results
 
-![Annual hourly load data with rolling average](graphs/Annual rolling average.png "Annual hourly load data with rolling average")
-
+<img src= "graphs/Annual rolling average.png" alt="Annual hourly load data with rolling average" title="Annual hourly load data with rolling average" />
 Figure 1: This figure shows the hourly annual load in 2021 (shaded grey) as well as the 20-day rolling average (blue line). This shows how one of the main frequencies driving the load is the annual (as well as daily) variance.
 
 <img src="graphs/Daily average annual.png" alt="Daily average load" title="Daily average load" style="zoom:25%;" />
 Figure 2: This data shows the average daily load from 2015-2021 (blue line) as well the 25%-75% percentile range (shaded grey)
 
-![Seasonal daily mean](graphs/Seasonal daily mean.png "Seasonal daily mean")
+<img src="graphs/Seasonal daily mean.png" alt="Seasonal daily mean" title="Seasonal daily mean" />
 Figure 3: Same data as in figure 2 but now split by season (see table 1), to give an idea how the different timeslices affect the distribution of the data.
 
-![Fast Fourier transform](graphs/FFT.png "Fast Fourier transform")
+<img src="graphs/FFT.png" alt="Fast Fourier transform" title="Fast Fourier transform" />
 Figure 4: This figure shows the results of the fast Fourier transform analysis for each variable. On the left, it shows the twenty dominant frequencies lower than 30 days, on the right it shows the twenty dominant frequencies higher than 30 days. Note that the amplitudes are normalised.
 
-![Distribution](graphs/Distribution.png "Distribution")
+<img scr="graphs/Distribution.png" alt="Distribution" title="Distribution" />
 Figure 5: This figure shows an example of the distribution graphs, in this case for group season - weekday 1 - daynite (group D). The blue dot is the mean value, the smaller blue dots give the mean plus/minus the standard deviation. The red dot gives the median value, the red crosses give the minimum and maximum values, and the 10% and 90% percentiles.
 
 ## Conclusion and discussion
 
-My recommendation is that we add a weekday (working day (L)/weekend day (H)) timeslice to the model. This timeslice enriches the data as it allows us to capture weekly variance in the data, without adding much computational complexity or complicating data gathering. Figure 4 shows that the load, export, and import values have a strong weekly and intraweekly (7 days and 3.5 days) frequencies, but these are currently not captured in the daynite and season timeslices. Using a seven-day weekday timeslice increases computational costs ($$4 \cdot 7 \cdot 3 = 84$$ vs $4 \cdot 2 \cdot 3=24$) without increasing accuracy and is therefore not recommended. 
+My recommendation is that we add a weekday timeslice to the model. This timeslice enriches the data as it allows us to capture weekly variance in the data, without adding much computational complexity or complicating data gathering. Figure 4 shows that the load, export, and import values have a strong weekly and intraweekly (7 days and 3.5 days) frequencies, but these are currently not captured in the daynite and season timeslices. Using a seven-day weekday timeslice increases computational costs ($$4 \cdot 7 \cdot 3 = 84$$ vs $4 \cdot 2 \cdot 3=24$) without increasing accuracy and is therefore not recommended. 
 
 I suggest using the abbreviation 'L' for working days (**l**abour) and 'H' for weekend days (**h**oliday). Using these conventions, the new timeslices and their annual share are:  
 
@@ -210,7 +209,7 @@ Table 9: Annual share of the new proposed timeslices.
 
 The figure below shows the average hourly load for each season-weekday pair, with the mean load per daynite timeslice for the given season and weekday superimposed. It shows how the model simplifies the load data and to what extent it accurately summarises the data, given that the model does not currently capture variance (only mean values).
 
-![Season - weekday 1 - daynite graph with means](graphs/Seasonal weekday with daynite.png "Season - weekday 1 - daynite graph with means")
+<img src="graphs/Seasonal weekday with daynite.png" alt="Season - weekday 1 - daynite graph with means" title= "Season - weekday 1 - daynite graph with means" />
 
 Figure 6: Daily load, by season and weekday, with average timeslice values superimposed. 
 
@@ -224,7 +223,8 @@ The best way to test the effect of new timeslices is to add them to the TIMES-CZ
 
 This has not been fully done yet for the proposed season - weekday 1 - daynite group  (D) of timeslices, and thus further work is needed to explore the exact impacts on the model of using this new group. Currently, on the EUA-revision branch, I have added a new scenario file [`Scen_AltTS.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_AltTS.xlsx) which incorporates the seaon - weekday 1 - daynite group (D) with a corresponding [`Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx) scenario file which replaces [`Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx) (and ultimately, [`Scen_CZ_elcprice_SEK.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK.xlsx)).
 
-As mentioned previously, many other timeslices remain unexplored. The data gathered suggests that perhaps the spring and autumn seasonal timeslices could be merged, as for some data points they show very similar means and distributions. Alternatively, they could be split and merged; creating an early-Spring/late-Autumn timeslice (capturing the onset/end of Winter) and an late-Spring/early-Autumn timeslice (capturing the onset/end of Summer). Furthermore, the current daynite timeslices could be expanded. The current definition of 'Night' lasting 12-hours appears to be too broad as the reduced demand does not last for so long, perhaps an alternative to the exenteded daynite timeslices discussed in this report. One could envision the following timeslice:
+As mentioned previously, many other timeslices remain unexplored. The data gathered suggests that perhaps the spring and autumn seasonal timeslices could be merged, as for some data points they show very similar means and distributions. Alternatively, they could be split and merged; creating an early-Spring/late-Autumn ti
+meslice (capturing the onset/end of Winter) and an late-Spring/early-Autumn timeslice (capturing the onset/end of Summer). Furthermore, the current daynite timeslices could be expanded. The current definition of 'Night' lasting 12-hours appears to be too broad as the reduced demand does not last for so long, perhaps an alternative to the exenteded daynite timeslices discussed in this report. One could envision the following timeslice:
 
 | Extended daynite 3 | Description                               | Lenght (h) |
 | ------------------ | ----------------------------------------- | ---------- |
