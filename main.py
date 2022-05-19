@@ -11,7 +11,6 @@ load_path = r"C:/Users/czpkersten/Documents/timeslices/data/load 2015-2021.csv"
 generation_path = r"C:/Users/czpkersten/Documents/timeslices/data/generation 2015-2021.csv"
 import_export_paths = [f"C:/Users/czpkersten/Documents/timeslices/data/cross border {year}.csv" for year in range(2015, 2022)]
 price_path = r"C:/Users/czpkersten/Documents/timeslices/data/prices 2015-2021.csv"
-#price_paths = [f"C:/Users/czpkersten/Documents/timeslices/data/prices {year}.xls" for year in range(2015,2022)]
 
 directory = r"C:/Users/czpkersten/Documents/timeslices-output/"
 
