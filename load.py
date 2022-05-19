@@ -1,46 +1,12 @@
-import pandas as pd
+'''
+Functions to load and combine data sets
+'''
+
 import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
-from to_bin.variables import GENERATION_PATH, LOAD_PATH, DIRECTORY
-
-"""
-# Lists of seasonal timeslices
-daynites = ['Night', 'Day', 'Peak']
-#           [('Spring', 'Night'), ('Spring', 'Day'), ('Spring', 'Peak')]
-spring_ts = [('Spring', i) for i in daynites]
-summer_ts = [('Summer', i) for i in daynites]
-autumn_ts = [('Autumn', i) for i in daynites]
-winter_ts = [('Winter', i) for i in daynites]
-
-# Lists of daynite timeslices
-seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-#          [('Spring', 'Night'), ('Summer', 'Night'), ('Autumn', 'Night'), ('Winter', 'Night')]
-night_ts = [(i, 'Night') for i in seasons]
-day_ts = [(i, 'Day') for i in seasons]
-peak_ts = [(i, 'Peak') for i in seasons]
-
-
-
-# Full list of time slices
-ts_lst = ['1. ZN', '1. ZP', '1. ZD', 
-    '2. SN', '2. SP', '2. SD', 
-    '3. FN', '3. FP', '3. FD',
-    '4. WN', '4. WP', '4. WD']
-
-
-# Translation dictionary from timeslice character to long name
-ts_dct = {
-    'N' : 'Night',
-    'D' : 'Day',
-    'P' : 'Peak',
-    'Z' : 'Spring',
-    'S' : 'Summer',
-    'F' : 'Autumn',
-    'W' : 'Winter'}
-"""
+import pandas as pd
 
 def fmt(i):
     '''
@@ -50,7 +16,7 @@ def fmt(i):
     '''
     if type(i) == str:
         i = i.replace(' [MW]', '')
-        i = i.replace(' [EUR/MWh]', '-euro')
+        i = i.replace(' [EUR/MWh]', '-eur')
         i = i.replace(' [CZK/MWh]', '-czk')
         return i.lower()
     elif type(i) in [float, np.float64]:

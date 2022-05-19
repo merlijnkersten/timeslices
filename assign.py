@@ -1,8 +1,12 @@
-import pandas as pd
+'''
+Functions to assign timeslices to the time series.
+'''
+
 import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import pandas as pd
 
 from load import fmt 
 
@@ -91,7 +95,7 @@ def daynite(df, column):
     return df.index.map(daynite_dct)
 
 
-def weekday(df):
+def weekday_1(df):
     years = range(2015, 2022)
     holidays = [
         (1,1),  # New Years
@@ -143,17 +147,9 @@ def weekday(df):
             # It must be a weekday
             day_dct[day] = 'Working day'
     
-    #for day in public_holidays:
-    #    day_dct[day] = 'Weekend'
-
     return df['Date'].map(day_dct)
-    #df['Season weekday-weekend'] = df['Season'] + df['Weekday weekend'].lower()
-    #return df['Weekday weekend'] #, df['Season weekday-weekend]
 
-# set month/hour through df.index.month / .hour eazy
-
-
-def weekday_alt(df):
+def weekday_2(df):
     day_dct = {
         0 : 'Monday',
         1 : 'Tuesday',

@@ -1,17 +1,20 @@
+'''
+Quick & dirty script for generating report visualisations
+
+'''
 import pandas as pd
 import matplotlib.pyplot as plt
-
-# Quick & dirty script for generating report visualisations
 
 INPUT_PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021.csv"
 OUTPUT_PATH = "C:/Users/czpkersten/Documents/timeslices-output/"
 
+INPUT_PATH = "C:/Users/Merlijn Kersten/Documents/uk/timeslices/data/combined 2015-2021.csv"
+OUTPUT_PATH = "C:/Users/Merlijn Kersten/Documents/uk/timeslices-output/"
 
 df = pd.read_csv(INPUT_PATH)
 
 # Pesky daylight-saving hours
 df = df[df['Hour'] <= 23]
-
 
 # 1. Seasoan (var_col) graph
 var_col = 'Season'
@@ -27,51 +30,53 @@ colour_dct = {
         'Winter' : 'cornflowerblue'
 }
 
-fig, axs = plt.subplots(1, 4, sharey=True, figsize=(15,5))
+fig, axs = plt.subplots(1, 4, sharey=True, figsize=(15,5), tight_layout=True)
 i = 0
 for var in vars:
     temp = df[df[var_col]==var]
     group = temp.groupby(by=[time_col])[value_col]
-    mean = group.mean()
-    q75 = group.quantile(0.75)
-    q25 = group.quantile(0.25)
+    
     x = temp[time_col].unique()
     axes = axs[i]
-    print(colour_dct[var])
+    
+    mean = group.mean()
     axs[i].plot(x, mean, label=var, c=colour_dct[var])
+    
+    q75 = group.quantile(0.75)
+    q25 = group.quantile(0.25)
     axs[i].fill_between(x, q25, q75, alpha=0.2, color=colour_dct[var])
 
-    axs[i].set_xticks([0, 6, 12, 18, 24])
-    #axs[i].legend()
-    axs[i].set_title(var)
     axs[i].set_xlabel(time_col)
+    axs[i].set_xticks([0, 6, 12, 18, 24])
+    axs[i].set_title(var)
     axs[i].grid()
 
     i += 1
 
 axs[0].set_ylabel(value_col)
 
-plt.tight_layout
-plt.savefig(OUTPUT_PATH+'mean.png', dpi=300, format='png')
+plt.savefig(f'{OUTPUT_PATH} mean.png', dpi=300, format='png')
 plt.show()
 
 
 # 2. Annual average daily
 group = df.groupby(by=[time_col])[value_col]
+
+x = temp[time_col].unique()
+
 mean = group.mean()
+plt.plot(x, mean, color='tab:blue')
+
 q90 = group.quantile(0.9)
 q10 = group.quantile(0.1)
-x = temp[time_col].unique()
-plt.plot(x, mean, color='tab:blue')
 plt.fill_between(x, q10, q90, alpha=0.2, color='dimgrey')
-plt.xticks([0, 6, 12, 18, 24])
-#axs[i].legend()
-plt.xlabel(time_col)
-plt.grid()
+
 plt.ylabel(value_col)
+plt.xlabel(time_col)
+plt.xticks([0, 6, 12, 18, 24])
+plt.grid()
 plt.tight_layout
 plt.title('Average daily load (2015-2021)')
-
 
 fig_path = OUTPUT_PATH + 'Daily average annual.png'
 plt.savefig(fig_path, dpi=300, format='png')
@@ -79,14 +84,11 @@ plt.show()
 
 # 3. Daily average load by season and weekday with timeslice imposed
 var_col = 'Season weekday'
-vars = ['Winter Working day',
-'Winter Weekend',
-'Spring Working day',
-'Spring Weekend',
-'Summer Working day',
-'Summer Weekend',
-'Autumn Working day',
-'Autumn Weekend']
+vars = ['Winter Working day', 'Winter Weekend',
+    'Spring Working day', 'Spring Weekend',
+    'Summer Working day', 'Summer Weekend',
+    'Autumn Working day', 'Autumn Weekend'
+]
 fig, axs = plt.subplots(2, 4, sharey=True, sharex=True, figsize=(10,5))
 
 i = 0

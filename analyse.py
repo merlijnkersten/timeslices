@@ -1,8 +1,12 @@
-import pandas as pd
+'''
+Functions to analyse and visualise the data.
+'''
+
 import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import pandas as pd
 from scipy.fft import fft
 import seaborn as sns
 
@@ -141,15 +145,15 @@ def timeslice_analysis_2(df, statistics_column, directory):
     # EXAMPLE WITH Season weekday AS column_a AND Daynite AS column_b
     statistics = []
 
-    values_a = df['Season weekday'].unique()
+    values_a = df['Season weekday 1'].unique()
     values_b = df['Daynite'].unique()
 
     fig, axs = plt.subplots(2, 4, sharey=True, figsize=(10,5))
     i = 0
     for value in values_a:
         ts = itertools.product([value], values_b)
-        create_load_duration_graph(df, ts, 'Season weekday', 'Daynite', statistics_column, axs[i%2, i//2], 'b')
-        get_statistics(df, ts, 'Season weekday', 'Daynite', statistics_column, statistics)
+        create_load_duration_graph(df, ts, 'Season weekday 1', 'Daynite', statistics_column, axs[i%2, i//2], 'b')
+        get_statistics(df, ts, 'Season weekday 1', 'Daynite', statistics_column, statistics)
         i += 1
 
     axs[0,0].set_ylabel(statistics_column)
@@ -164,11 +168,10 @@ def timeslice_analysis_2(df, statistics_column, directory):
     fig_path = f'{directory}Load duration curve {fmt(statistics_column)} seasons weekdays.png'
     plt.savefig(fig_path, dpi=300, format='png')
 
-    csv_path = f'{directory}Statistics {fmt(statistics_column)} - season weekday - daynite.csv'
+    csv_path = f'{directory}Statistics {fmt(statistics_column)} - season weekday 1 - daynite.csv'
     pd.DataFrame(statistics).to_csv(csv_path, index=False)
 
     plt.show()
-
 
 
 def seasonal_weekday_daynite_analysis(df, column, directory):
@@ -188,9 +191,9 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
     for season_weekday in a:
         ts = list(itertools.product([season_weekday], b))
 
-        create_load_duration_graph(df, ts, 'Season weekday', 'Daynite', column, axs[i%2, i//2], 'b')
+        create_load_duration_graph(df, ts, 'Season weekday 1', 'Daynite', column, axs[i%2, i//2], 'b')
 
-        statistics.append(get_statistics(df, ts, 'Season weekday', 'Daynite', column))
+        statistics.append(get_statistics(df, ts, 'Season weekday 1', 'Daynite', column))
 
         i += 1
 
@@ -211,10 +214,16 @@ def seasonal_weekday_daynite_analysis(df, column, directory):
 
     plt.show()
 
+
 def perform_fft(input, output, column):
+    '''
+    input: file containing time series
+    ouput: output file destination
+    column: Load [MW] etc
+    '''
     df = pd.read_csv(input)
     
-    #https://pythonnumericalmethods.berkeley.edu/notebooks/chapter24.04-FFT-in-Python.html
+    #From: https://pythonnumericalmethods.berkeley.edu/notebooks/chapter24.04-FFT-in-Python.html
 
     # Fourier transform
     data = df[column].to_numpy()
@@ -225,15 +234,12 @@ def perform_fft(input, output, column):
     T = N/sr
     freq = n/T 
 
-    # Get the one-sided specturm
+    # Get the one-sided spectrum & frequency
     n_oneside = N//2
-    # get the one side frequency
     f_oneside = freq[:n_oneside]
 
-    # Frequencies in hours
+    # Frequencies in hours and days
     t_h = 1/f_oneside / (60 * 60)
-
-    # Frequencies in days
     t_d = 1/f_oneside / (60 * 60 * 24)
 
     # Save FFT as CSV
@@ -247,21 +253,26 @@ def perform_fft(input, output, column):
 
     # Filter results: only values with an amplitude higher than 25 and a frequency lower than one year (365 days)
     df = df[(df['X']>=25) & (df['t_d'] <= 365) ]
-
+    print(output)
     df.sort_values(by='X', ascending=False).to_csv(output, index=False)
 
-def fft_visualisation(directory):
 
+def fft_visualisation(directory):
+    '''
+    directory: directory containing (solely) output files from perform_fft function.
+    Plots the FFT over two domains, for all files present in directory.
+    '''
     os.chdir(directory)
     files = os.listdir(directory)
 
     dct = {
         # Add own file names here      
         # 'path_in_directory.csv' : [visualisation position, 'Column label', 'Plot colour']
-        'combined 2015-2021 exports fft.csv' : [1, 'Exports', 'limegreen'],
-        'combined 2015-2021 imports fft.csv' : [2, 'Imports', 'gold'],
-        'combined 2015-2021 prices fft.csv' : [3, 'Prices', 'orangered'],
-        'combined 2015-2021 load fft.csv' : [0, 'Load', 'cornflowerblue'],      
+        'load fft.csv' : [0, 'Load', 'cornflowerblue'],
+        'exports fft.csv' : [1, 'Exports', 'limegreen'],
+        'imports fft.csv' : [2, 'Imports', 'gold'],
+        'price-eur fft.csv' : [3, 'Prices', 'orangered'],
+        'price-czk fft.csv' : [4, 'Prices', 'mediumorchid']        
     }
 
     fig, axs = plt.subplots(len(dct), 2, sharey=True, sharex='col', figsize=(10,11), tight_layout=True)
@@ -278,9 +289,9 @@ def fft_visualisation(directory):
         cutoff = 30 #days, cutoff for left and right graph.
 
         short_df = df[df['t_d']<=cutoff].nlargest(n=20, columns='X')
-        X_d = short_df['X'].to_numpy()
-        t_d = short_df['t_d'].to_numpy()
-        X_d = X_d/X_d_max
+        X_d = short_df['X'].to_numpy() #y values
+        t_d = short_df['t_d'].to_numpy() 
+        X_d = X_d/X_d_max # normalised x values
 
         axs[pos,0].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
         axs[pos,0].set_xticks([1, 7, 14, 21, 28])
@@ -297,12 +308,18 @@ def fft_visualisation(directory):
         axs[pos,1].set_xticks([30, 91, 183, 274, 365])
         axs[pos,1].grid()
 
-    axs[3,0].set_xlabel('Frequency (days)')
-    axs[3,1].set_xlabel('Frequency (days)')
+    axs[len(dct),0].set_xlabel('Frequency (days)')
+    axs[len(dct),1].set_xlabel('Frequency (days)')
     fig.suptitle('Fast Fourier transform (2015-2021)')
+    plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
     plt.show()
 
+
 def plot_distribution(directory):
+    '''
+    Plots basic distribution of data, using Seaborn (instead of Matplotlib).
+    directory: folder containing solely files from get_statistics function (analyse.py)
+    '''
     os.chdir(directory)
 
     files = os.listdir(directory)

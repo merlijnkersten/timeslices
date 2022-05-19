@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 INPUT_PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021.csv"
 OUTPUT_PATH = "C:/Users/czpkersten/Documents/timeslices/data/combined 2015-2021 prices fft.csv"
 
+INPUT_PATH = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/combined 2015-2021.csv"
+OUTPUT_PATH = "C:/Users/czpkersten/Documents/UK/timeslices/data/combined 2015-2021 prices fft.csv"
+
+
 df = pd.read_csv(INPUT_PATH)
 
 #https://pythonnumericalmethods.berkeley.edu/notebooks/chapter24.04-FFT-in-Python.html
@@ -19,17 +23,13 @@ sr = 1/(60*60) #Sampling rate: once per hour (1/3600 per second)
 T = N/sr
 freq = n/T 
 
-# Get the one-sided specturm
+# get the one-sided spectrum & frequencies
 n_oneside = N//2
-# get the one side frequency
 f_oneside = freq[:n_oneside]
 
-
-
-fig, axs = plt.subplots(2, 1, figsize=(10,10))
+fig, axs = plt.subplots(2, 1, figsize=(10,10), tight_layout=True)
 
 # Plot FFT in hour frequency span
-# convert frequency to hour
 t_h = 1/f_oneside / (60 * 60)
 axs[0].stem(t_h, np.abs(X[:n_oneside])/n_oneside, markerfmt=',')
 axs[0].set_xticks([6, 12, 24, 84, 168])
@@ -37,7 +37,6 @@ axs[0].set_xlim(0, 200)
 axs[0].set_xlabel('Period (hour)')
 
 # Plot FFT in day frequency span
-# convert frequency to day
 t_d = 1/f_oneside / (60 * 60 * 24)
 axs[1].stem(t_d, np.abs(X[:n_oneside])/n_oneside, markerfmt=',')
 axs[1].set_xticks([7, 31, 365])
