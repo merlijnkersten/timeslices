@@ -30,6 +30,7 @@ def create_load_duration_graph(df, ts_lst, column_a, column_b, plot_column, axs,
     b: shorter time period (daynite, hour), sets linestyle
     '''
 
+    # Two dictionaries to provide colours and linestyle - TODO rewrite code to do without?
     linestyle_dct = {
         'Night' : 'solid',
         'Day' : 'dashed',

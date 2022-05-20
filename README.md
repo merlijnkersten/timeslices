@@ -14,7 +14,7 @@ All these functions can be run from the `main.py` file or individually in their 
 
 A fourth file, `report_visualisations.py`, is listed in the `graphs` folder, it contains some rough-and-ready code to generate some of the visualisations used in this report. 
 
-I am working on 'translating' some key functions from `python` to `R` , and on adding more comments to the code to explain its functionality. 
+I am working on 'translating' some key functions from `python` to `R` (see `r-translation` branch), and on adding more comments to the code to explain its functionality. 
 
 # Documentation
 
@@ -75,7 +75,7 @@ The following data sources were used:
 
 _Table 4_: Data sources used in this report.
 
-ČEPS is the Czech transmission system operator and OTE-ČR is the Czech electricity and gas market operator. 2015 is the base year of the TIMES-CZ model and 2020 is a milestone year; 2021 is the last year for which full data is available. Hourly (average) values were the highest available temporal resolution. All of the original data files can be found in the data folder on the Github repository. 
+ČEPS is the Czech transmission system operator and OTE-ČR is the Czech electricity and gas market operator. 2015 is the base year of the TIMES-CZ model and 2020 is a milestone year; 2021 is the last year for which full data is available. Hourly (average) values were the highest available temporal resolution. All of the original data files can be found in the data folder on the GitHub repository. 
 
 Some minor cleaning and reshaping actions were performed on the data (see `load.py`). This included calculating total generation, total import, total export, and net export. The data sources were combined into a single data file, `combined 2015-2021.csv`, which can also be found in the data folder on the GitHub repository (see preface).
 
@@ -119,7 +119,7 @@ _Table 6_: Definition of the extended daynite 2 timeslices.
 
 _Table 7_: Definition of the weekday timeslices. The length of the timeslices, expressed as an annual percentage, is calculated over 2015-2021 but can vary year-to-year due to differences of the date of public holidays. Note that the length of the working day/weekend day slices is not exactly 5/7 and 2/7 (71.4% and 28.6%), respectively, due to the inclusion of public holidays as weekend days. 
 
-These timeslices were then combined to into groups, based on my judgement of which combinations would produce interesting and usable results. This was broadly done by including at least one long-term timeslice (season, month) and at least one short-term timeslice (daynite, hour, etc). Not all groups were analysed extensively due to time constraints, 
+These timeslices were then combined to into groups, based on my judgement of which combinations would produce interesting and usable results. This was broadly done by including at least one long-term timeslice (season, month) and at least one short-term timeslice (daynite, hour, etc). Not all groups were analysed extensively due to time constraints.
 
 | Name | Group                                   | Size             |
 | ---- | --------------------------------------- | -----------------|
