@@ -121,22 +121,22 @@ _Table 7_: Definition of the weekday timeslices. The length of the timeslices, e
 
 These timeslices were then combined to into groups, based on my judgement of which combinations would produce interesting and usable results. This was broadly done by including at least one long-term timeslice (season, month) and at least one short-term timeslice (daynite, hour, etc). Not all groups were analysed extensively due to time constraints, 
 
-| Name | Group                                   | Size                          |
-| ---- | --------------------------------------- | ----------------------------- |
-| Null | Season - daynite                        | $$ 4 \cdot 3 = 12 $$          |
-| A    | Season - extended daynite 1             | $$ 4 \cdot 4 = 16 $$          |
-| B    | Season - extended daynite 2             | $$ 4 \cdot 8 = 24 $$          |
-| C    | Season - hour                           | $$ 4 \cdot 24 = 96 $$         |
-| D    | Season - weekday 1 - daynite            | $$ 4 \cdot 2 \cdot 3 = 2 4 $$ |
-| E    | Season - weekday 1 - extended daynite 1 | $$ 4 \cdot 2 \cdot 4 = 32 $$  |
-| F    | Season - weekday 2                      | $$ 4 \cdot 7 = 28 $$          |
-| G    | Season - weekday 2 - daynite            | $$ 4 \cdot 7 \cdot 3 = 84 $$  |
-| H    | Month - daynite                         | $$ 12 \cdot 3 = 36 $$         |
-| I    | Month - extended daynite 1              | $$ 12 \cdot 4 = 48 $$         |
-| J    | Month - extended daynite 2              | $$ 12 \cdot 8 = 96 $$         |
-| K    | Month - weekday 1                       | $$ 12 \cdot 2 = 24 $$         |
-| L    | Month - weekday 1 - daynite             | $$ 12 \cdot 2 \cdot 3 = 72 $$ |
-| M    | Month - hour                            | $$ 12 \cdot 24 = 288 $$       |
+| Name | Group                                   | Size             |
+| ---- | --------------------------------------- | -----------------|
+| Null | Season - daynite                        |  12 (4 × 3)      |
+| A    | Season - extended daynite 1             |  16 (4 × 4)      |
+| B    | Season - extended daynite 2             |  24 (4 × 8)      |
+| C    | Season - hour                           |  96 (4 × 24)     |
+| D    | Season - weekday 1 - daynite            |  24 (4 × 2 × 3)  |
+| E    | Season - weekday 1 - extended daynite 1 |  32 (4 × 2 × 4)  |
+| F    | Season - weekday 2                      |  28 (4 × 7)      |
+| G    | Season - weekday 2 - daynite            |  84 (4 × 7 × 3)  |
+| H    | Month - daynite                         |  36 (12 × 3)     |
+| I    | Month - extended daynite 1              |  48 (12 × 4)     |
+| J    | Month - extended daynite 2              |  96 (12 × 8)     |
+| K    | Month - weekday 1                       |  24 (12 × 2)     |
+| L    | Month - weekday 1 - daynite             |  72 (12 × 2 × 3) |
+| M    | Month - hour                            |  288 (12 × 24)   |
 
 _Table 8_: The different timeslice groupings considered in this report. The _Null_ group is the current timeslices group used in the TIMES-CZ model. 'Size' gives the total number of timeslices in the group.
 
@@ -169,7 +169,7 @@ _Figure 5_: This figure shows an example of the distribution graphs, in this cas
 
 ## Conclusion and discussion
 
-My recommendation is that we add a weekday timeslice to the model. This timeslice enriches the data as it allows us to capture weekly variance in the data, without adding much computational complexity or complicating data gathering. Figure 4 shows that the load, export, and import values have a strong weekly and intraweekly (7 days and 3.5 days) frequencies, but these are currently not captured in the daynite and season timeslices. This new group does, partially, capture them. Furthermore, other economic statistics on working day/weekend day consumption and production patterns should be readily available. Using a more granular seven-day weekday timeslice (weekday 2) increases computational costs ($$4 \cdot 7 \cdot 3 = 84$$ vs $4 \cdot 2 \cdot 3=24$) without increasing accuracy and is therefore not recommended. 
+My recommendation is that we add a weekday timeslice to the model. This timeslice enriches the data as it allows us to capture weekly variance in the data, without adding much computational complexity or complicating data gathering. Figure 4 shows that the load, export, and import values have a strong weekly and intraweekly (7 days and 3.5 days) frequencies, but these are currently not captured in the daynite and season timeslices. This new group does, partially, capture them. Furthermore, other economic statistics on working day/weekend day consumption and production patterns should be readily available. Using a more granular seven-day weekday timeslice (weekday 2) increases computational costs (4 × 7 × 3 = 84 vs 4 × 2 × 3=24) without increasing accuracy and is therefore not recommended. 
 
 I suggest using the abbreviation 'L' for working days (**l**abour) and 'H' for weekend days (**h**oliday). Using these conventions, the new timeslices and their annual share are:  
 
