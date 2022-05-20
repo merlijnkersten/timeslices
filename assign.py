@@ -99,6 +99,7 @@ def daynite(df, column):
 def weekday_1(df):
     years = range(2015, 2022)
     holidays = [
+        #(month, day)
         (1,1),  # New Years
         (5,1),  # Labour Day
         (5,8),  # Liberation from Fascism
@@ -119,6 +120,7 @@ def weekday_1(df):
         public_holidays.extend([pd.Timestamp(year, d[0], d[1]) for year in years])
 
     easter_dates = [
+        #(year, month, day)
         (2016, 3, 25), # Good Friday (public holiday since 2016)
         (2017, 4, 14),
         (2018, 3, 30),
