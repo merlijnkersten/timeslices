@@ -257,7 +257,8 @@ def perform_fft(input, output, column):
     df = pd.DataFrame(dct)
 
     # Filter results: only values with an amplitude higher than 25 and a frequency lower than one year (365 days)
-    df = df[(df['X']>=25) & (df['t_d'] <= 365) ]
+    #df = df[(df['X']>=25) & (df['t_d'] <= 365) ]
+    df = df[df['t_d'] <= 400]
     print(output)
     df.sort_values(by='X', ascending=False).to_csv(output, index=False)
 
@@ -313,8 +314,8 @@ def fft_visualisation(directory):
         axs[pos,1].set_xticks([30, 91, 183, 274, 365])
         axs[pos,1].grid()
 
-    axs[len(dct),0].set_xlabel('Frequency (days)')
-    axs[len(dct),1].set_xlabel('Frequency (days)')
+    axs[len(dct)-1,0].set_xlabel('Frequency (days)')
+    axs[len(dct)-1,1].set_xlabel('Frequency (days)')
     fig.suptitle('Fast Fourier transform (2015-2021)')
     plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
     plt.show()
@@ -352,3 +353,23 @@ def plot_distribution(directory):
         plt.tight_layout()
         plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
         plt.show()
+
+# TEMP
+
+input = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/combined 2015-2021.csv"
+
+columns = [
+    ('Load [MW]', 'load'),
+    ('Imports [MW]', 'imports'),
+    ('Exports [MW]', 'exports'),
+    ('Price [CZK/MWh]', 'price-czk'),
+    ('Price [EUR/MWh]', 'price-eur')
+]
+
+for pair in columns:
+    output = f"C:/Users/Merlijn Kersten/Documents/UK/timeslices-output/fft/{pair[1]} fft.csv"
+    perform_fft(input, output, pair[0])
+
+# Create FFT visualisation (for all files in directory)
+sub_directory = "C:/Users/Merlijn Kersten/Documents/UK/timeslices-output/fft"
+fft_visualisation(sub_directory)

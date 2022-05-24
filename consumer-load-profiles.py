@@ -27,7 +27,7 @@ def create_consumer_load_profile_file(directory, output):
             if column not in type_dct.keys():
                 type_dct[column] = float
         '''
-        print(file)
+
         df = pd.read_excel(file, skiprows=4)
         df = df[df['Day'].notna()]
         df['Hour_temp'] = df['Hour'].apply(zero_padded_hour)
@@ -59,8 +59,6 @@ FILE = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/consumer load prof
 
 df = consumer_load_profile(FILE)
 
-print(df)
-
 color_lst = [
     'orangered',
     'gold',
@@ -88,12 +86,12 @@ def perform_fft(input, output, column):
     column: Load [MW] etc
     '''
     df = pd.read_csv(input)
-    #print(df)
+
     #From: https://pythonnumericalmethods.berkeley.edu/notebooks/chapter24.04-FFT-in-Python.html
 
     # Fourier transform
     data = df[column].to_numpy()
-    #print(data)
+
     X = fft(data)
     N = len(X)
     n = np.arange(N)
@@ -104,12 +102,6 @@ def perform_fft(input, output, column):
     # Get the one-sided spectrum & frequency
     n_oneside = N//2 - 1
     f_oneside = freq[:n_oneside]
-    #f_oneside = f_oneside[1:]
-    #X = X[1:]
-    #f_oneside = f_oneside[f_oneside > 0]
-    print(np.abs(X))
-    print(f_oneside)
-    #print(f_oneside)
     
     # Frequencies in hours and days
     t_h = 1/f_oneside / (60 * 60)
@@ -126,8 +118,7 @@ def perform_fft(input, output, column):
 
     # Filter results: only values with an amplitude higher than 25 and a frequency lower than one year (365 days)
     #df = df[(df['X']>=25) & (df['t_d'] <= 365) ]
-    df = df[df['t_d'] <= 365]
-    print(output)
+    df = df[df['t_d'] <= 400]
     df.sort_values(by='X', ascending=False).to_csv(output, index=False)
 
 DIR = "C:/Users/czpkersten/Desktop"
@@ -144,16 +135,13 @@ def fft_visualisation(directory):
     '''
     os.chdir(directory)
     files = os.listdir(directory)
-    print(files)
     
     fig, axs = plt.subplots(len(files), 3, sharey=True, sharex='col', figsize=(10,11), tight_layout=True)
     if len(files) > len(color_lst):
         raise ValueError(f"{len(files)} files but only {len(color_lst)} available.")
 
     i = 0
-    print('i=0')
     for file in files:
-        print(f'{i}: {file}')
 
         label = file.split('/')[-1].split(' ')[0]
         color = color_lst[i]
@@ -200,7 +188,66 @@ def fft_visualisation(directory):
     axs[i-1,2].set_xlabel('Frequency (days)')
     fig.suptitle('Fast Fourier transform (2015-2021)')
     plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
-    print('SHOW')
     plt.show()
 
-fft_visualisation(DIR)
+#fft_visualisation(DIR)
+
+def fft_individual_visualisation(directory, output):
+    os.chdir(directory)
+    files = os.listdir(directory)
+       
+    if len(files) > len(color_lst):
+        raise ValueError(f"{len(files)} files but only {len(color_lst)} available.")
+    i=0
+    for file in files:
+        fig, axs = plt.subplots(1, 3, sharey=True, figsize=(8,5), tight_layout=True)
+
+        label = file.split('/')[-1].split(' ')[0]
+        color = color_lst[i]
+        
+        df = pd.read_csv(file)
+        X_max = df['X'].max()
+
+        cutoff_1 = 25/24 #days, (30 hours) cutoff for left and right graph.
+        cutoff_2 = 30 # days
+
+        short_df = df[df['t_d']<=cutoff_1].nlargest(n=20, columns='X')
+        X = short_df['X'].to_numpy() #y values
+        t_h = short_df['t_h'].to_numpy() 
+        X = X/X_max # normalised x values
+
+        axs[0].stem(t_h, X, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[0].set_xticks([6, 12, 18, 24])
+        axs[0].grid()
+
+        med_df = df[(cutoff_1 <= df['t_d']) & (df['t_d']<=cutoff_2)].nlargest(n=20, columns='X')
+        X_d = med_df['X'].to_numpy()
+        t_d = med_df['t_d'].to_numpy()
+        X_d = X_d/X_max
+
+        axs[1].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[1].set_xticks([1, 7, 14, 21, 28])
+        axs[1].grid()
+
+        long_df = df[df['t_d']>=cutoff_2].nlargest(n=20, columns='X')
+        X_d = long_df['X'].to_numpy()
+        t_d = long_df['t_d'].to_numpy()
+        X_d = X_d/X_max
+
+        axs[2].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[2].set_xticks([30, 91, 183, 274, 365])
+        axs[2].grid()
+
+        axs[0].set_xlabel('Frequency (hours)')
+        axs[1].set_xlabel('Frequency (days)')
+        axs[2].set_xlabel('Frequency (days)')
+        fig.suptitle(f'Fast Fourier transform - {label} (2015-2021)')
+        plt.savefig(f'{output} {label}.png', dpi=300, format='png')
+        #plt.show()
+        i+=1
+
+
+
+OUTPUT = "C:/Users/Merlijn Kersten/Documents/UK/graphs/"
+
+fft_individual_visualisation(DIR, OUTPUT)
