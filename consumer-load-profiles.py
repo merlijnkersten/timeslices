@@ -251,3 +251,7 @@ def fft_individual_visualisation(directory, output):
 OUTPUT = "C:/Users/Merlijn Kersten/Documents/UK/graphs/"
 
 fft_individual_visualisation(DIR, OUTPUT)
+
+NEW_DIR = "C:/Users/Merlijn Kersten/Documents/UK/timeslices-output/fft"
+
+fft_individual_visualisation(NEW_DIR, OUTPUT)
