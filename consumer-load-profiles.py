@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import os
 
 from load import zero_padded_hour
-
+import assign
 #from analyse import perform_fft
 
 def create_consumer_load_profile_file(directory, output):
@@ -255,3 +255,9 @@ fft_individual_visualisation(DIR, OUTPUT)
 NEW_DIR = "C:/Users/Merlijn Kersten/Documents/UK/timeslices-output/fft"
 
 fft_individual_visualisation(NEW_DIR, OUTPUT)
+
+df['Date'] = pd.to_datetime(df['Day'], format=r'%Y-%m-%d')
+
+df['Season'] = assign.season(df)
+df['Weekday'] = assign.weekday_1(df)
+

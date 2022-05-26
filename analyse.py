@@ -8,7 +8,6 @@ To do: re-create code for generation load/etc duration graphs.
 '''
 
 import itertools
-from multiprocessing.sharedctypes import Value
 import matplotlib.pyplot as plt
 import numpy as np
 import os
