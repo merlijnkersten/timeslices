@@ -30,13 +30,9 @@ def create_consumer_load_profile_file(directory, output):
 
         df = pd.read_excel(file, skiprows=4)
         df = df[df['Day'].notna()]
-        df['Hour_temp'] = df['Hour'].apply(zero_padded_hour)
-        #df[['Day', 'Hour']] = df[['Day', 'Hour']].astype(str)
-        #df['Hour'] = df['Hour'].apply(zero_padded_hour)
-        #df[['Day', 'Hour']] = df[['Day','Hour']].astype(str) 
+        df['Hour_temp'] = df['Hour'].apply(zero_padded_hour) 
         df['Date and time'] = df[['Day', 'Hour_temp']].astype(str).agg(''.join, axis=1)
         df.drop('Hour_temp', inplace=True, axis=1)
-        #df['Date and time'] = pd.to_datetime(df['Date and time'], format=r'%Y-%m-%d %H')
         df.set_index('Date and time', inplace=True)
         df_lst.append(df)
         df.columns = [col.replace('\n','') for col in df.columns]
@@ -71,7 +67,7 @@ color_lst = [
     'rebeccapurple',
     'seagreen',
     'saddlebrown',
-    'khaki',
+    'khaki', # TOO LIGHT REPLACE
     'palevioletred',
     'darkolivegreen',
     'steelblue',
@@ -100,6 +96,7 @@ def perform_fft(input, output, column):
     freq = n/T 
 
     # Get the one-sided spectrum & frequency
+    # WHAT DOES THE -1 DO HERE & WHY DOES IT WORK
     n_oneside = N//2 - 1
     f_oneside = freq[:n_oneside]
     
@@ -219,6 +216,7 @@ def fft_individual_visualisation(directory, output):
         axs[0].stem(t_h, X, markerfmt=',', linefmt=color, basefmt='grey')
         axs[0].set_xticks([6, 12, 18, 24])
         axs[0].grid()
+        axs[0].set_title('Day')
 
         med_df = df[(cutoff_1 <= df['t_d']) & (df['t_d']<=cutoff_2)].nlargest(n=20, columns='X')
         X_d = med_df['X'].to_numpy()
@@ -228,6 +226,7 @@ def fft_individual_visualisation(directory, output):
         axs[1].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
         axs[1].set_xticks([1, 7, 14, 21, 28])
         axs[1].grid()
+        axs[1].set_title('Month')
 
         long_df = df[df['t_d']>=cutoff_2].nlargest(n=20, columns='X')
         X_d = long_df['X'].to_numpy()
@@ -237,6 +236,7 @@ def fft_individual_visualisation(directory, output):
         axs[2].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
         axs[2].set_xticks([30, 91, 183, 274, 365])
         axs[2].grid()
+        axs[2].set_title('Year')
 
         axs[0].set_xlabel('Frequency (hours)')
         axs[1].set_xlabel('Frequency (days)')
