@@ -2,11 +2,14 @@
 Functions to load and combine data sets
 '''
 
+from asyncio import start_server
 import itertools
+from time import strptime
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+from datetime import datetime as dt
 
 def fmt(i):
     '''
@@ -36,6 +39,89 @@ def zero_padded_hour(i):
         return ' 0' + j
     else:
         return ' '  + j
+
+
+def to_utc(df):
+    wt_to_st_lst = [ # winter time to summer time
+        #(year, month, day)
+        (2015, 3, 29),
+        (2016, 3, 27),
+        (2017, 3, 26),
+        (2018, 3, 25),
+        (2019, 3, 31),
+        (2020, 3, 29),
+        (2021, 3, 28)
+    ]
+    wt_to_st = [pd.Timestamp(d[0], d[1], d[2]) for d in wt_to_st_lst]
+    st_to_wt_lst = [ # summer time to winter time
+        #(year, month, day)
+        (2015, 10, 25),
+        (2016, 10, 30),
+        (2017, 10, 29),
+        (2018, 10, 28),
+        (2019, 10, 27),
+        (2020, 10, 25),
+        (2021, 10, 31)
+    ]
+    st_to_wt = [pd.Timestamp(d[0], d[1], d[2]) for d in st_to_wt_lst]
+    st_lst = [ # summer time 
+        #[start, end]
+        ['2015/03/30', '2015/10/24'],
+        ['2016/03/28', '2016/10/29'],
+        ['2017/03/27', '2017/10/28'],
+        ['2018/03/26', '2018/10/27'],
+        ['2019/04/01', '2019/10/26'],
+        ['2020/03/30', '2020/10/24'],
+        ['2021/03/29', '2021/10/30']
+    ]
+
+    st = pd.date_range(start='1997/07/02', end='1999/06/24')
+    for start_end in st_lst:
+        st.append(pd.date_range(start=start_end[0], end=start_end[1]))
+
+    wt = pd.date_range(start='1997/07/02', end='1999/06/24')
+    for start_end in wt_lst:
+        wt.append(pd.date_range(start=start_end[0], end=start_end[1]))
+
+    wt_lst = [ # summer time
+        #[start, end]
+        ['2015/01/01', '2015/03/28'],
+        ['2015/10/26', '2016/03/26'],
+        ['2016/10/31', '2017/03/25'],
+        ['2017/10/30', '2018/03/24'],
+        ['2018/10/29', '2019/03/30'],
+        ['2019/10/28', '2020/03/28'],
+        ['2020/10/26', '2021/03/27'],
+        ['2021/11/01', '2021/12/31'],
+    ]
+    wt_to_st_set = set(wt_to_st)
+    st_to_wt_set = set(st_to_wt)
+    
+    def look_up_time(date_time):
+        date_time = dt.strptime(date_time, format=r"%d.%m.%Y %H:%M")
+        date = date_time.date
+        time = date_time.time
+        if date in st:
+            time = time - 2 # CEST to UTC
+        elif date in wt:
+            time = time - 1 # CET to UTC
+        elif date in st_to_wt:
+            if time <= 1:
+                time = time - 2 # CEST to UTC
+            elif time == 2 and  date in st_to_wt_set:
+                time = time - 2 # CEST to UTC
+                st_to_wt_set = st_to_wt_set - {date}
+            else:
+                time = time - 1 # CET to UTC
+        elif date in wt_to_st:
+            if time <= 1:
+                time = time - 1 # CET to UTC
+            else:
+                time = time -2 # CEST to UTC
+        # recombine date and time into a date time
+        return None
+        
+    return df['Date'].apply(look_up_time)
 
 
 def load_generation(load_path, generation_path):
