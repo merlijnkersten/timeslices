@@ -79,10 +79,6 @@ def to_utc(df):
     for start_end in st_lst:
         st.append(pd.date_range(start=start_end[0], end=start_end[1]))
 
-    wt = pd.date_range(start='1997/07/02', end='1999/06/24')
-    for start_end in wt_lst:
-        wt.append(pd.date_range(start=start_end[0], end=start_end[1]))
-
     wt_lst = [ # summer time
         #[start, end]
         ['2015/01/01', '2015/03/28'],
@@ -94,34 +90,64 @@ def to_utc(df):
         ['2020/10/26', '2021/03/27'],
         ['2021/11/01', '2021/12/31'],
     ]
+    wt = pd.date_range(start='1997/07/02', end='1999/06/24')
+    for start_end in wt_lst:
+        wt.append(pd.date_range(start=start_end[0], end=start_end[1]))
+        
     wt_to_st_set = set(wt_to_st)
     st_to_wt_set = set(st_to_wt)
     
+    def hh(h_int):
+        h = str(h_int)
+        if len(h) == 1:
+            return '0' + str(h)
+        else:
+            return str(h)
+
     def look_up_time(date_time):
-        date_time = dt.strptime(date_time, format=r"%d.%m.%Y %H:%M")
-        date = date_time.date
-        time = date_time.time
+        #date_time_fmt = dt.strptime(date_time, format=r"%d.%m.%Y %H:%M")
+        #date = date_time_fmt.date
+        #hour = date_time_fmt.hour
+        # ^^ why does this not work?
+        # 2019-01-01 00
+        # 01.01.2019 03:00
+        # 0123456789012345
+        date = date_time[0:10]
+        hour = int(float(date_time[11:13]))
         if date in st:
-            time = time - 2 # CEST to UTC
+            hour = hour - 2 # CEST to UTC
         elif date in wt:
-            time = time - 1 # CET to UTC
+            hour = hour - 1 # CET to UTC
         elif date in st_to_wt:
-            if time <= 1:
-                time = time - 2 # CEST to UTC
-            elif time == 2 and  date in st_to_wt_set:
-                time = time - 2 # CEST to UTC
+            if hour <= 1:
+                hour = hour - 2 # CEST to UTC
+            elif hour == 2 and  date in st_to_wt_set:
+                hour = hour - 2 # CEST to UTC
                 st_to_wt_set = st_to_wt_set - {date}
             else:
-                time = time - 1 # CET to UTC
+                hour = hour - 1 # CET to UTC
         elif date in wt_to_st:
-            if time <= 1:
-                time = time - 1 # CET to UTC
+            if hour <= 1:
+                hour = hour - 1 # CET to UTC
             else:
-                time = time -2 # CEST to UTC
+                hour = hour - 2 # CEST to UTC
+        else:
+            print(f'wut {i}')
         # recombine date and time into a date time
-        return None
+
+        utc_date_time = f'{date} {hh(hour)}:00'
+
+        return utc_date_time
         
     return df['Date'].apply(look_up_time)
+
+path = r"C:/Users/czpkersten/Documents/timeslices/data/consumer load profile 2015-2021.csv"
+df = pd.read_csv(path)
+df['Date'] = df['Date and time']
+df['New'] = to_utc(df)
+print(df)
+out = r"C:/Users/czpkersten/Desktop/temp.csv"
+df.to_csv(out)
 
 
 def load_generation(load_path, generation_path):
