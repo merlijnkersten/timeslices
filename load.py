@@ -132,7 +132,7 @@ def to_utc(df):
             else:
                 hour = hour - 2 # CEST to UTC
         else:
-            print(f'wut {i}')
+            print(f'wut')
         # recombine date and time into a date time
 
         utc_date_time = f'{date} {hh(hour)}:00'
