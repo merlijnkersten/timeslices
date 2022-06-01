@@ -10,6 +10,7 @@ import numpy as np
 import os
 import pandas as pd
 from datetime import datetime as dt
+import pytz
 
 def fmt(i):
     '''
@@ -42,6 +43,10 @@ def zero_padded_hour(i):
 
 
 def to_utc(df):
+
+    prague = pytz.timezone('Europe/Prague')
+    prague.localize('dt')
+    'dt'.astimezone(pytz.utc)
     wt_to_st_lst = [ # winter time to summer time
         #(year, month, day)
         (2015, 3, 29),
@@ -105,6 +110,9 @@ def to_utc(df):
             return str(h)
 
     def look_up_time(date_time):
+
+
+
         #date_time_fmt = dt.strptime(date_time, format=r"%d.%m.%Y %H:%M")
         #date = date_time_fmt.date
         #hour = date_time_fmt.hour
@@ -132,7 +140,7 @@ def to_utc(df):
             else:
                 hour = hour - 2 # CEST to UTC
         else:
-            print(f'wut')
+            print('wut')
         # recombine date and time into a date time
 
         utc_date_time = f'{date} {hh(hour)}:00'
