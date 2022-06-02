@@ -8,6 +8,9 @@ from load import zero_padded_hour
 import assign
 #from analyse import perform_fft
 
+def refmt(i):
+    return i.replace(' ', '').replace('.', '')
+
 def create_consumer_load_profile_file(directory, output):
     files = [f'{directory}/consumer load profile {year}.xls' for year in range(2015,2022)]
 
@@ -30,7 +33,7 @@ def create_consumer_load_profile_file(directory, output):
 
         df = pd.read_excel(file, skiprows=4)
         df = df[df['Day'].notna()]
-        df['Hour_temp'] = df['Hour'].apply(zero_padded_hour) 
+        df['Hour_temp'] = df['Hour'].astype(int).apply(zero_padded_hour) 
         df['Date and time'] = df[['Day', 'Hour_temp']].astype(str).agg(''.join, axis=1)
         df.drop('Hour_temp', inplace=True, axis=1)
         df.set_index('Date and time', inplace=True)
@@ -39,12 +42,12 @@ def create_consumer_load_profile_file(directory, output):
 
     pd.concat(df_lst).to_csv(output)
 
-DIR = "C:/Users/czpkersten/Documents/timeslices/data"
+#DIR = "C:/Users/czpkersten/Documents/timeslices/data"
 DIR = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data"
-OUT = "C:/Users/czpkersten/Desktop/output.csv"
+#OUT = "C:/Users/czpkersten/Desktop/output.csv"
 OUT = "C:/Users/Merlijn Kersten/Desktop/output.csv"
-#create_consumer_load_profile_file(DIR, OUT)
-
+create_consumer_load_profile_file(DIR, OUT)
+quit()
 def consumer_load_profile(file):
     df = pd.read_csv(file)
     df.set_index('Date and time', inplace=True)

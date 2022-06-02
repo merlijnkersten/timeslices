@@ -149,6 +149,7 @@ def to_utc(df):
         
     return df['Date'].apply(look_up_time)
 
+'''
 path = r"C:/Users/czpkersten/Documents/timeslices/data/consumer load profile 2015-2021.csv"
 df = pd.read_csv(path)
 df['Date'] = df['Date and time']
@@ -156,6 +157,7 @@ df['New'] = to_utc(df)
 print(df)
 out = r"C:/Users/czpkersten/Desktop/temp.csv"
 df.to_csv(out)
+'''
 
 
 def load_generation(load_path, generation_path):
