@@ -8,6 +8,8 @@ from load import zero_padded_hour
 import assign
 #from analyse import perform_fft
 
+print('Wrong!')
+
 def refmt(i):
     return i.replace(' ', '').replace('.', '')
 
@@ -47,7 +49,7 @@ DIR = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data"
 #OUT = "C:/Users/czpkersten/Desktop/output.csv"
 OUT = "C:/Users/Merlijn Kersten/Desktop/output.csv"
 create_consumer_load_profile_file(DIR, OUT)
-quit()
+
 def consumer_load_profile(file):
     df = pd.read_csv(file)
     df.set_index('Date and time', inplace=True)

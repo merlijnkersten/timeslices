@@ -354,7 +354,7 @@ def plot_distribution(directory):
         plt.show()
 
 # TEMP
-
+'''
 input = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/combined 2015-2021.csv"
 
 columns = [
@@ -372,3 +372,4 @@ for pair in columns:
 # Create FFT visualisation (for all files in directory)
 sub_directory = "C:/Users/Merlijn Kersten/Documents/UK/timeslices-output/fft"
 fft_visualisation(sub_directory)
+'''

@@ -1,23 +1,39 @@
+from datetime import datetime, date, time, timedelta, tzinfo
+import itertools
+import matplotlib.pyplot as plt
+import numpy as np
+import os
 import pandas as pd
 import pytz
-from datetime import datetime, date, time, timedelta
+from scipy.fft import fft
+import seaborn as sns
 
-st_to_wt_lst = [
-    (2015, 10, 25),
-    (2016, 10, 30),
-    (2017, 10, 29),
-    (2018, 10, 28),
-    (2019, 10, 27),
-    (2020, 10, 25),
-    (2021, 10, 31)
-]
-st_to_wt = [date(i[0], i[1], i[2]) for i in st_to_wt_lst]
-st_to_wt_set = set(st_to_wt)
-print(st_to_wt_set)
+# Import own packages from other scripts
+import load
 
 
-a = date(year=2015, month=10, day=25)
+lst = [f"C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/cross border {year}.csv" for year in range(2015, 2022)]
+df = load.generate_cross_border_csv(lst)
+df.to_csv("C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/cross border 2015-2021.csv")
 
-st_to_wt_set = st_to_wt_set - {a}
+lst = [f"C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/prices {year}.xls" for year in range(2015, 2022)]
+output = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/prices 2015-2021.csv"
+load.generate_price_csv(lst, output)
 
-print(st_to_wt_set)
+directory = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data"
+output = "C:/Users/Merlijn Kersten/Documents/UK/timeslices/data/consumer load profile 2015-2021.csv"
+load.generate_consumer_load_profile_csv(directory, output)
+
+'''
+path = "C:/Users/Merlijn Kersten/Desktop/combined.csv"
+
+df = pd.read_csv(path)
+
+df["Date and time [UTC]"] = pd.to_datetime(df["Date and time [UTC]"])#, format=r"%Y-%m-%d %H:%M:%S+%z")
+
+df.set_index("Date and time [UTC]", inplace=True)   
+
+df = load.polish(df)
+
+df.to_csv(path.replace('.csv', ' 2.csv'))
+'''

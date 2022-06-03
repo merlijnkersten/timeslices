@@ -72,10 +72,10 @@ def daynite(df, column):
         percentile = 1/12
         length = sub_df.shape[0]
         n = round(length * percentile)
-        peaks = list(sub_df.nlargest(n, 'Load [MW]')['Date and time'])
+        peaks = list(sub_df.nlargest(n, 'Load [MW]')['Date and time [UTC]'])
         peak_ids.extend(peaks)
       
-    day_ids = set(daypeak_df['Date and time']) - set(peak_ids)
+    day_ids = set(daypeak_df['Date and time [UTC]']) - set(peak_ids)
 
     daynite_dct = dict()
     for index in night_ids:
@@ -88,10 +88,9 @@ def daynite(df, column):
         daynite_dct[index] = 'Day'
     
     # Need to do it this week due to daylight saving changing oddities in night_ids (better: len(daynite_dct))
-    indices_sum = len(night_ids) + len(peak_ids) + len(day_ids)
-    test = indices_sum == df.shape[0]
+    test = len(daynite_dct) == df.shape[0]
     if not test:
-        raise Exception(f'DataFrame and Night/Peak/Day index arrays do not have same length: {df.shape[0]} vs {indices_sum}')         
+        raise Exception(f'DataFrame and Night/Peak/Day index arrays do not have same length: {df.shape[0]} vs {len(daynite_dct)}')         
     
     return df.index.map(daynite_dct)
 
