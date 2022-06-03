@@ -248,7 +248,7 @@ def fft_individual_visualisation(directory, output):
         axs[2].set_xlabel('Frequency (days)')
         fig.suptitle(f'Fast Fourier transform - {label} (2015-2021)')
         plt.savefig(f'{output} {label}.png', dpi=300, format='png')
-        #plt.show()
+        plt.show()
         i+=1
 
 

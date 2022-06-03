@@ -34,25 +34,9 @@ price_df = load.price(PRICE_PATH)
 cross_border_df = load.cross_border(CROSS_BORDER_PATH)
 consumer_load_profile_df = load.consumer_load_profile(CONSUMER_LOAD_PROFILE_PATH)
 
+combined_df = pd.concat([load_generation_df, price_df, cross_border_df, consumer_load_profile_df], axis=1)
+combined_df = load.polish(combined_df)
 
-#diff = price_df.columns.difference(load_generation_df.columns)
-#lgp_df = pd.merge(load_generation_df, price_df, left_index=True, right_index=True)
-
-#diff = cross_border_df.columns.difference(lgp_df)
-#lgpcb_df = pd.merge(lgp_df, cross_border_df,left_index=True, right_index=True)
-
-#diff = consumer_load_profile_df.columns.difference(lgpcb_df)
-#lgpcbclp_df = pd.merge(lgpcb_df, consumer_load_profile_df,left_index=True, right_index=True)
-
-#combined_df = load.polish(lgpcbclp_df)
-
-#combined_df.to_csv("C:/Users/Merlijn Kersten/Desktop/test_combined.csv")
-
-
-
-combined_df = load.merge([load_generation_df, price_df, cross_border_df, consumer_load_profile_df])
-combined_2_df = pd.concat([load_generation_df, price_df, cross_border_df, consumer_load_profile_df], axis=1)
-combined_2_df.to_csv("C:/Users/Merlijn Kersten/Desktop/test_combined_2.csv")
 # Assign (and combine) various timeslices to the time series
 combined_df['Season'] = assign.season(combined_df)
 combined_df['Daynite'] = assign.daynite(combined_df, 'Date')
