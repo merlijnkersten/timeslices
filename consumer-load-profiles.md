@@ -57,65 +57,64 @@ _May 2022, merlijn_
 
 
 
-| #    | Category    | Description                                                  |
-| ---- | ----------- | ------------------------------------------------------------ |
-| 1    | Commercial  | No electricity for heat or hot water                         |
+| #    | Category    | Description                                                              |
+| ---- | ----------- | ------------------------------------------------------------------------ |
+| 1    | Commercial  | No electricity for heat or hot water                                     |
 | 2    | Commercial  | Heat accumulation (hot water & heating, includes another source of heat) |
-| 3    | Commercial  | Electricity for heating including heat pumps                 |
-| 4    | Residential | No electricity for heat or hot water                         |
-| 5    | Residential | Heat accumulation (usually, hot water)                       |
-| 6    | Residential | Electricity for heating (includes another source of heat)    |
-| 7    | Residential | Electricity for heating including heat pumps                 |
-| 8    | Commercial  | Public lighting                                              |
+| 3    | Commercial  | Electricity for heating including heat pumps                             |
+| 4    | Residential | No electricity for heat or hot water                                     |
+| 5    | Residential | Heat accumulation (usually, hot water)                                   |
+| 6    | Residential | Electricity for heating (includes another source of heat)                |
+| 7    | Residential | Electricity for heating including heat pumps                             |
+| 8    | Commercial  | Public lighting                                                          |
 
 
-Original processes that Lukáš showed me:
-
-| Abbreviation | Description                     | #        |
-| ------------ | ------------------------------- | -------- |
-| CLIG         | Commercial lighting             | #1?      |
-| CCOK         | Commercial cooking              | #1?      |
-| CREF         | Commercial refrigeration        | #1?      |
-| CPLI         | Commercial public lighting      | #8       |
-| COEL         | Commercial other electricity    | #1+#2+#3 |
-| COEN         | Commercial other energy generic | #1+#2+#3 |
-
-Additional processes found in the COM_?? tag:
+Commercial processes:
 
 | Abbreviation | Description                                             | #        |
 | ------------ | ------------------------------------------------------- | -------- |
-| CCLE         | Commercial space cooling large existing                 | #2?+#3?  |
-| CCSE         | Commercial space cooling small existing                 | #2?+#3?  |
-| CHLE         | Commercial space heating large                          | #2+#3    |
-| CHSE         | Commercial space heating small                          | #2+#3    |
-| CWLE         | Commercial water heating large existing                 | #2+#3    |
-| CWSE         | Commercial water heating small existing                 | #2+#3    |
-| RHDE         | Residential space heating single semi-detached existing | #5+#6    |
-| RHRE         | Residential space heating single rural existing         | #5+#6    |
-| RHRN         | Residential space heating single rural new              | #5+#6    |
-| RHUN         | Residential space heating single urban new              | #5+#6    |
-| RHME         | Residential space heating multiple all existing         | #5+#6    |
-| RHMN         | Residential space heating multiple all existing new     | #5+#6    |
-| RCDE         | Residential space cooling single detached existing      | #5+#6    |
-| RCRE         | Residential space cooling single rural existing         | #5?+#6   |
-| RCRN         | Residential space cooling single rural new              | #5?+#6   |
-| RCME         | Residential space cooling multiple all existing         | #5?+#6?  |
-| RCMN         | Residential space cooling multiple all new              | #5?+#6?  |
-| RWUN         | Residential water heating single urban new              | #5+#6    |
-| RWDE         | Residential water heating single urban existing         | #5+#6    |
-| RWRN         | Residential water heating single rural new              | #5+#6    |
-| RWRE         | Residential water heating single rural existing         | #5+#6    |
-| RWME         | Residential water heating multiple all existing         | #5+#6    |
-| RWMN         | Residential water heating multiple all new              | #5+#6    |
+| CHLE         | Commercial space heating large                          | #3       |
+| CHSE         | Commercial space heating small                          | #3       |
+| CCLE         | Commercial space cooling large existing                 | #1       |
+| CCSE         | Commercial space cooling small existing                 | #1       |
+| CWLE         | Commercial water heating large existing                 | #2       |
+| CWSE         | Commercial water heating small existing                 | #2       |
+| CLIG         | Commercial lighting                                     | #1       |
+| CCOK         | Commercial cooking                                      | #1       |
+| CREF         | Commercial refrigeration                                | #1       |
+| CPLI         | Commercial public lighting                              | #8       |
+| COEL         | Commercial other electricity                            | #1+#2    |
+| COEN         | Commercial other energy generic                         | #1+#2    |
+
+Residential processes:
+
+| Abbreviation | Description                                             | #        |
+| ------------ | ------------------------------------------------------- | -------- |
+| RHDE         | Residential space heating single semi-detached existing | #6+#7    |
+| RHRE         | Residential space heating single rural existing         | #6+#7    |
+| RHRN         | Residential space heating single rural new              | #6+#7    |
+| RHUN         | Residential space heating single urban new              | #6+#7    |
+| RHME         | Residential space heating multiple all existing         | #6+#7    |
+| RHMN         | Residential space heating multiple all existing new     | #6+#7    |
+| RCDE         | Residential space cooling single detached existing      | #4       |
+| RCRE         | Residential space cooling single rural existing         | #4       |
+| RCRN         | Residential space cooling single rural new              | #4       |
+| RCME         | Residential space cooling multiple all existing         | #4       |
+| RCMN         | Residential space cooling multiple all new              | #4       |
+| RWUN         | Residential water heating single urban new              | #5       |
+| RWDE         | Residential water heating single urban existing         | #5       |
+| RWRN         | Residential water heating single rural new              | #5       |
+| RWRE         | Residential water heating single rural existing         | #5       |
+| RWME         | Residential water heating multiple all existing         | #5       |
+| RWMN         | Residential water heating multiple all new              | #5       |
 | RCOK         | Residential cooking                                     | #4       |
 | RCWA         | Residential clothes washing                             | #4       |
-| RCDR         | Residential cloth drying                                | #5+#6    |
+| RCDR         | Residential cloth drying                                | #4       |
 | RDWA         | Residential dish  washing                               | #4       |
 | RLIG         | Residential lighting existing                           | #4       |
-| RREF         | Residential refrigeration                               | #5?+#6?  |
-| ROEL         | Residential other electricity                           | #4+#5+#6 |
-| ROEN         | Residential other energy generic                        | #4+#5+#6 |
-
+| RREF         | Residential refrigeration                               | #4       |
+| ROEL         | Residential other electricity                           | #4+#5    |
+| ROEN         | Residential other energy generic                        | #4+#5    |
 
 Remaining timeslice dependent COM_?? processes (I think we cannot use consumer load profiles to determine values):
 
@@ -135,6 +134,35 @@ Remaining timeslice dependent COM_?? processes (I think we cannot use consumer l
 | IOI          | Other industries demand | #        |
 
 Relevant document `CZ_V02-\VT_CZ_TRA_V2.2.xlsx`
+
+| #    | Processes                                                        |
+| ---- | ---------------------------------------------------------------- |
+| 1 	 | CCLE, CCSE, CLIG, CCOK, CCREF				                            |
+| 2    | CWLE, CWSE 				                                              |
+| 3    | CHLE, CHSE                                                       |				
+| 4    | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RLIG, RREF	|			
+| 5    | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                              |				
+| 6	   |				                                                          |
+| 7    | 	                                                                |
+| 8    | CPLI						                                                  |
+| 1, 2 | COEL, COEN				                                                |
+| 4, 5 | ROEL, ROEN				                                                |
+| 6, 7 | RHDE, RHRE, RHRN, RHUN, RHME, RHMN				                        |
+
+To get the values for the TTD5 profile, I took a population-weighted average of the regional TDD5 profiles. I dvided the Czech regions into the regional TTD5 profiles in the following way:
+
+| Name (CZ)      | Name (EN)       | Regions	                  | Pop (,000) | Pop (rel) |
+| -------------- | --------------- | -------------------------- | ---------- | --------- |   
+| jižní čechy    | South Bohemia   | South Bohemian, Vysocina   |	1141       | 0.11      |
+| jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17      |
+| praha          | Prague          | Praha                      | 1275       | 0.12      |
+| severní čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1237       | 0.12      |
+| severní morava | North Moravia   | Moravian-Silesian, Olomouc | 1801       | 0.17      |
+| střední čechy  | Central Bohemia | Central Bohemia            | 1387       | 0.13      |
+| východní čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1058       | 0.10      |
+| západní čechy  | West Bohemia    | Karlovy Vary, Plzen        |862         | 0.08      |
+
+
 
 How to combine multiple consumer load patterns?
 
