@@ -1,8 +1,10 @@
 # Consumer load profiles
 
-_May 2022, merlijn_
+_May-June 2022, merlijn_
 
 [Data source](https://www.ote-cr.cz/en/statistics/electricity-load-profiles/normalized-lp?date=2015-05-24)
+
+Fast Fourier transform results:
 
 | Column        | Frequency 1 | Frequency 2 | Frequency 3 | Frequency 4 |
 | ------------- | ----------- | ----------- | ----------- | ----------- |
@@ -20,10 +22,14 @@ _May 2022, merlijn_
 | tdd7          | 365d        | 24h         | 12h         | 183d        |
 | tdd8          | 24h         | 365d        | 12h         | 8h          |
 
+Compared to previous columns:
+
 * Daily frequencies much more prominent,
 * Absence of half/quarter/etc year frequencies etc 
 * Week weakly frequencies
 * Much less spread in frequencies (stronger dominant frequencies)
+
+
 
 | Column        | Frequency 1 | Frequency 2 | Frequency 3 | Frequency 4 |
 | ------------- | ----------- | ----------- | ----------- | ----------- |
@@ -42,53 +48,47 @@ _May 2022, merlijn_
 | tdd8          | Day         | Year        | Day         | Day         |
 
 
-* category C = commercial/industry
-* category D = households
 
-* 1, 4 no electricity for heat or hot water
-* 2 - heat accumulation (hot water or heating), there is also another source of heat
-* 5 -   heat accumulation (usually hot water)
-* 6 -   electricity for heating, but there is also another source of heat
-* 3, 7 electricity for heating - including heat pumps
-* 8 public lightening
+# Categories
 
-[Czech explanation](https://www.eru.cz/sites/default/files/upload/Priloha_4_541.pdf)
+Category descriptions ([Czech explanation](https://www.eru.cz/sites/default/files/upload/Priloha_4_541.pdf)):
 
 
+| Category | Type        | Description                                                  |
+| -------- | ----------- | ------------------------------------------------------------ |
+| 1        | Commercial  | No electricity for heat or hot water                         |
+| 2        | Commercial  | Heat accumulation (hot water & heating, includes another source of heat) |
+| 3        | Commercial  | Electricity for heating including heat pumps                 |
+| 4        | Residential | No electricity for heat or hot water                         |
+| 5        | Residential | Heat accumulation (usually, hot water)                       |
+| 6        | Residential | Electricity for heating (includes another source of heat)    |
+| 7        | Residential | Electricity for heating including heat pumps                 |
+| 8        | Commercial  | Public lighting                                              |
 
-
-| #    | Category    | Description                                                              |
-| ---- | ----------- | ------------------------------------------------------------------------ |
-| 1    | Commercial  | No electricity for heat or hot water                                     |
-| 2    | Commercial  | Heat accumulation (hot water & heating, includes another source of heat) |
-| 3    | Commercial  | Electricity for heating including heat pumps                             |
-| 4    | Residential | No electricity for heat or hot water                                     |
-| 5    | Residential | Heat accumulation (usually, hot water)                                   |
-| 6    | Residential | Electricity for heating (includes another source of heat)                |
-| 7    | Residential | Electricity for heating including heat pumps                             |
-| 8    | Commercial  | Public lighting                                                          |
 
 
 Commercial processes:
 
-| Abbreviation | Description                                             | #        |
-| ------------ | ------------------------------------------------------- | -------- |
-| CHLE         | Commercial space heating large                          | #3       |
-| CHSE         | Commercial space heating small                          | #3       |
-| CCLE         | Commercial space cooling large existing                 | #1       |
-| CCSE         | Commercial space cooling small existing                 | #1       |
-| CWLE         | Commercial water heating large existing                 | #2       |
-| CWSE         | Commercial water heating small existing                 | #2       |
-| CLIG         | Commercial lighting                                     | #1       |
-| CCOK         | Commercial cooking                                      | #1       |
-| CREF         | Commercial refrigeration                                | #1       |
-| CPLI         | Commercial public lighting                              | #8       |
-| COEL         | Commercial other electricity                            | #1+#2    |
-| COEN         | Commercial other energy generic                         | #1+#2    |
+| Abbreviation | Description                             | Category |
+| ------------ | --------------------------------------- | -------- |
+| CHLE         | Commercial space heating large          | #3       |
+| CHSE         | Commercial space heating small          | #3       |
+| CCLE         | Commercial space cooling large existing | #1       |
+| CCSE         | Commercial space cooling small existing | #1       |
+| CWLE         | Commercial water heating large existing | #2       |
+| CWSE         | Commercial water heating small existing | #2       |
+| CLIG         | Commercial lighting                     | #1       |
+| CCOK         | Commercial cooking                      | #1       |
+| CREF         | Commercial refrigeration                | #1       |
+| CPLI         | Commercial public lighting              | #8       |
+| COEL         | Commercial other electricity            | #1+#2    |
+| COEN         | Commercial other energy generic         | #1+#2    |
+
+
 
 Residential processes:
 
-| Abbreviation | Description                                             | #        |
+| Abbreviation | Description                                             | Category |
 | ------------ | ------------------------------------------------------- | -------- |
 | RHDE         | Residential space heating single semi-detached existing | #6+#7    |
 | RHRE         | Residential space heating single rural existing         | #6+#7    |
@@ -116,43 +116,51 @@ Residential processes:
 | ROEL         | Residential other electricity                           | #4+#5    |
 | ROEN         | Residential other energy generic                        | #4+#5    |
 
-Remaining timeslice dependent COM_?? processes (I think we cannot use consumer load profiles to determine values):
 
-| Abbreviation | Description             | #        |
-| ------------ | ------------------------| -------- |
-| TAV          | Aviation generic        | #        |
-| TBI          | Road bus intercity      | #        |
-| TBU          | Road bus urban          | #        |
-| TC           | Road car short distance | #        |
-| TFR          | Road freight            | #        |
-| TMO          | Road motors             | #        |
-| TNA          | Navigation generic      | #        |
-| TTF          | Rail freight            | #        |
-| TTL          | Rail passengers light   | #        |
-| TTP          | Rail passengers heavy   | #        |
-| IFT          | Food and tobacco demand | #        |
-| IOI          | Other industries demand | #        |
 
-Relevant document `CZ_V02-\VT_CZ_TRA_V2.2.xlsx`
+Other processes (timeslice dependent COM_?? processes). I don't think we can use consumer load profiles to determine their values.
 
-| #    | Processes                                                        |
+| Abbreviation | Description             | Category |
+| ------------ | ----------------------- | -------- |
+| TAV          | Aviation generic        |          |
+| TBI          | Road bus intercity      |          |
+| TBU          | Road bus urban          |          |
+| TC           | Road car short distance |          |
+| TFR          | Road freight            |          |
+| TMO          | Road motors             |          |
+| TNA          | Navigation generic      |          |
+| TTF          | Rail freight            |          |
+| TTL          | Rail passengers light   |          |
+| TTP          | Rail passengers heavy   |          |
+| IFT          | Food and tobacco demand |          |
+| IOI          | Other industries demand |          |
+
+Relevant document: `CZ_V02-\VT_CZ_TRA_V2.2.xlsx`
+
+
+
+The same information as in the previous three tables, but now by category (instead of process):
+
+| Category | Processes                                                        |
 | ---- | ---------------------------------------------------------------- |
 | 1 	 | CCLE, CCSE, CLIG, CCOK, CCREF				                            |
 | 2    | CWLE, CWSE 				                                              |
-| 3    | CHLE, CHSE                                                       |				
-| 4    | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RLIG, RREF	|			
-| 5    | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                              |				
-| 6	   |				                                                          |
-| 7    | 	                                                                |
+| 3    | CHLE, CHSE                                                       |
+| 4    | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RLIG, RREF	|
+| 5    | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                              |
+| 6	   | _None_ |
+| 7    | _None_ |
 | 8    | CPLI						                                                  |
 | 1, 2 | COEL, COEN				                                                |
 | 4, 5 | ROEL, ROEN				                                                |
 | 6, 7 | RHDE, RHRE, RHRN, RHUN, RHME, RHMN				                        |
 
-To get the values for the TTD5 profile, I took a population-weighted average of the regional TDD5 profiles. I dvided the Czech regions into the regional TTD5 profiles in the following way:
 
-| Name (CZ)      | Name (EN)       | Regions	                  | Pop (,000) | Pop (rel) |
-| -------------- | --------------- | -------------------------- | ---------- | --------- |   
+
+To get the values for the TTD5 profile, I took a population-weighted average of the regional TDD5 profiles. I combined Czech regions into the regional TTD5 profiles in the following way:
+
+| Name (CZ)      | Name (EN)       | Regions	                  | Pop (,000) | Pop (relative) |
+| -------------- | --------------- | -------------------------- | ---------- | --------- |
 | jižní čechy    | South Bohemia   | South Bohemian, Vysocina   |	1141       | 0.11      |
 | jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17      |
 | praha          | Prague          | Praha                      | 1275       | 0.12      |
@@ -163,6 +171,16 @@ To get the values for the TTD5 profile, I took a population-weighted average of 
 | západní čechy  | West Bohemia    | Karlovy Vary, Plzen        |862         | 0.08      |
 
 
+
+# To do's
+
+* Check that categorisation of processes and categorisation of regions is correct,
+* Determine how to average combinations of categories (which weights to assign).
+* Add timeslice values of the consumer load profiles into TIMES-CZ,
+
+
+
+# Other 
 
 How to combine multiple consumer load patterns?
 
