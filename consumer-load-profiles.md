@@ -71,13 +71,13 @@ Commercial processes:
 
 | Abbreviation | Description                             | Category |
 | ------------ | --------------------------------------- | -------- |
-| CHLE         | Commercial space heating large          | #3       |
-| CHSE         | Commercial space heating small          | #3       |
+| CHLE         | Commercial space heating large          | #3a      |
+| CHSE         | Commercial space heating small          | #3a      |
 | CCLE         | Commercial space cooling large existing | #1       |
 | CCSE         | Commercial space cooling small existing | #1       |
 | CWLE         | Commercial water heating large existing | #2       |
 | CWSE         | Commercial water heating small existing | #2       |
-| CLIG         | Commercial lighting                     | #1       |
+| CLIG         | Commercial lighting                     | #1a      |
 | CCOK         | Commercial cooking                      | #1       |
 | CREF         | Commercial refrigeration                | #1       |
 | CPLI         | Commercial public lighting              | #8       |
@@ -90,12 +90,12 @@ Residential processes:
 
 | Abbreviation | Description                                             | Category |
 | ------------ | ------------------------------------------------------- | -------- |
-| RHDE         | Residential space heating single semi-detached existing | #6+#7    |
-| RHRE         | Residential space heating single rural existing         | #6+#7    |
-| RHRN         | Residential space heating single rural new              | #6+#7    |
-| RHUN         | Residential space heating single urban new              | #6+#7    |
-| RHME         | Residential space heating multiple all existing         | #6+#7    |
-| RHMN         | Residential space heating multiple all existing new     | #6+#7    |
+| RHDE         | Residential space heating single semi-detached existing | #6a+#7a  |
+| RHRE         | Residential space heating single rural existing         | #6a+#7a  |
+| RHRN         | Residential space heating single rural new              | #6a+#7a  |
+| RHUN         | Residential space heating single urban new              | #6a+#7a  |
+| RHME         | Residential space heating multiple all existing         | #6a+#7a  |
+| RHMN         | Residential space heating multiple all existing new     | #6a+#7a  |
 | RCDE         | Residential space cooling single detached existing      | #4       |
 | RCRE         | Residential space cooling single rural existing         | #4       |
 | RCRN         | Residential space cooling single rural new              | #4       |
@@ -111,7 +111,7 @@ Residential processes:
 | RCWA         | Residential clothes washing                             | #4       |
 | RCDR         | Residential cloth drying                                | #4       |
 | RDWA         | Residential dish  washing                               | #4       |
-| RLIG         | Residential lighting existing                           | #4       |
+| RLIG         | Residential lighting existing                           | #4b      |
 | RREF         | Residential refrigeration                               | #4       |
 | ROEL         | Residential other electricity                           | #4+#5    |
 | ROEN         | Residential other energy generic                        | #4+#5    |
