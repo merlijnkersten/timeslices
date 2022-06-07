@@ -77,7 +77,7 @@ Commercial processes:
 | CCSE         | Commercial space cooling small existing | #1       |
 | CWLE         | Commercial water heating large existing | #2       |
 | CWSE         | Commercial water heating small existing | #2       |
-| CLIG         | Commercial lighting                     | #1a      |
+| CLIG         | Commercial lighting                     | #1       |
 | CCOK         | Commercial cooking                      | #1       |
 | CREF         | Commercial refrigeration                | #1       |
 | CPLI         | Commercial public lighting              | #8       |
@@ -141,34 +141,37 @@ Relevant document: `CZ_V02-\VT_CZ_TRA_V2.2.xlsx`
 
 The same information as in the previous three tables, but now by category (instead of process):
 
-| Category | Processes                                                        |
-| ---- | ---------------------------------------------------------------- |
-| 1 	 | CCLE, CCSE, CLIG, CCOK, CCREF				                            |
-| 2    | CWLE, CWSE 				                                              |
-| 3    | CHLE, CHSE                                                       |
-| 4    | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RLIG, RREF	|
-| 5    | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                              |
-| 6	   | _None_ |
-| 7    | _None_ |
-| 8    | CPLI						                                                  |
-| 1, 2 | COEL, COEN				                                                |
-| 4, 5 | ROEL, ROEN				                                                |
-| 6, 7 | RHDE, RHRE, RHRN, RHUN, RHME, RHMN				                        |
+| Category | Processes                                                  |
+| -------- | ---------------------------------------------------------- |
+| 1     	 | CCLE, CCSE, CLIG, CCOK, CCREF				                      |
+| 2        | CWLE, CWSE 				                                        |
+| 3        | _None_                                                     |
+| 4        | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RREF	|
+| 5        | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                        |
+| 6	       | _None_                                                     |
+| 7        | _None_                                                     |
+| 8        | CPLI						                                            |
+| 1, 2     | COEL, COEN				                                          |
+| 4, 5     | ROEL, ROEN				                                          |
+| 3a       | CHLE, CHSE				                                          |
+| 6a, 7a   | RHDE, RHRE, RHRN, RHUN, RHME, RHMN						              |
+| 4b       | RLIG				                                                |
 
-
+a: No summer heating,
+b: No summer lighting,
 
 To get the values for the TTD5 profile, I took a population-weighted average of the regional TDD5 profiles. I combined Czech regions into the regional TTD5 profiles in the following way:
 
 | Name (CZ)      | Name (EN)       | Regions	                  | Pop (,000) | Pop (relative) |
-| -------------- | --------------- | -------------------------- | ---------- | --------- |
-| jižní čechy    | South Bohemia   | South Bohemian, Vysocina   |	1141       | 0.11      |
-| jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17      |
-| praha          | Prague          | Praha                      | 1275       | 0.12      |
-| severní čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1237       | 0.12      |
-| severní morava | North Moravia   | Moravian-Silesian, Olomouc | 1801       | 0.17      |
-| střední čechy  | Central Bohemia | Central Bohemia            | 1387       | 0.13      |
-| východní čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1058       | 0.10      |
-| západní čechy  | West Bohemia    | Karlovy Vary, Plzen        |862         | 0.08      |
+| -------------- | --------------- | -------------------------- | ---------- | -------------- |
+| jižní čechy    | South Bohemia   | South Bohemian, Vysocina   |	1141       | 0.11           |
+| jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17           |
+| praha          | Prague          | Praha                      | 1275       | 0.12           |
+| severní čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1237       | 0.12           |
+| severní morava | North Moravia   | Moravian-Silesian, Olomouc | 1801       | 0.17           |
+| střední čechy  | Central Bohemia | Central Bohemia            | 1387       | 0.13           |
+| východní čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1058       | 0.10           |
+| západní čechy  | West Bohemia    | Karlovy Vary, Plzen        |862         | 0.08           |
 
 
 
