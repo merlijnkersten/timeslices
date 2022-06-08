@@ -118,7 +118,7 @@ Residential processes:
 
 
 
-Other processes (timeslice dependent COM_?? processes). I don't think we can use consumer load profiles to determine their values.
+Other processes (timeslice dependent `COM_FR` processes). I don't think we can use consumer load profiles to determine their values.
 
 | Abbreviation | Description             | Category |
 | ------------ | ----------------------- | -------- |
