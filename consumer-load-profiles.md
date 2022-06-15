@@ -22,7 +22,7 @@ Fast Fourier transform results:
 | tdd7          | 365d        | 24h         | 12h         | 183d        |
 | tdd8          | 24h         | 365d        | 12h         | 8h          |
 
-Compared to previous columns:
+Compared to previous columns (load, generation, price, cross-border), the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent. This suggest that my choice of season - weekday 1 - daynite timeslices will also accurately capture the variation in consumer load profile data.
 
 * Daily frequencies much more prominent,
 * Absence of half/quarter/etc year frequencies etc 
@@ -51,10 +51,10 @@ Compared to previous columns:
 
 # Categories
 
-Category descriptions ([Czech explanation](https://www.eru.cz/sites/default/files/upload/Priloha_4_541.pdf)):
+The consumer load profile data has the following categories (source: [Czech explanation](https://www.eru.cz/sites/default/files/upload/Priloha_4_541.pdf)):
 
 
-| Category | Type        | Description                                                  |
+| Category | Type        | Description (translated)                                     |
 | -------- | ----------- | ------------------------------------------------------------ |
 | 1        | Commercial  | No electricity for heat or hot water                         |
 | 2        | Commercial  | Heat accumulation (hot water & heating, includes another source of heat) |
@@ -65,24 +65,39 @@ Category descriptions ([Czech explanation](https://www.eru.cz/sites/default/file
 | 7        | Residential | Electricity for heating including heat pumps                 |
 | 8        | Commercial  | Public lighting                                              |
 
+The TDD5 category is split in 8 regions. To get a value for this category, I took a population-weighted average, using the population counts in table ==x==. I combined Czech regions into the regional TTD5 profiles in the following way:
 
+| Name (CZ)      | Name (EN)       | Regions                    | Pop (,000) | Pop (relative) |
+| -------------- | --------------- | -------------------------- | ---------- | -------------- |
+| jižní čechy    | South Bohemia   | South Bohemian, Vysocina   | 1141       | 0.11           |
+| jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17           |
+| praha          | Prague          | Praha                      | 1275       | 0.12           |
+| severní čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1237       | 0.12           |
+| severní morava | North Moravia   | Moravian-Silesian, Olomouc | 1801       | 0.17           |
+| střední čechy  | Central Bohemia | Central Bohemia            | 1387       | 0.13           |
+| východní čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1058       | 0.10           |
+| západní čechy  | West Bohemia    | Karlovy Vary, Plzen        | 862        | 0.08           |
+
+Furthermore, nased on Lukáš' recommendation, I added a 'zero heating in summer' option (a), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (b), which reduces the residential lighting load profile (`RLIG`) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours. I also awarded some processes a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. ==discuss 3/4==. 
+
+The processes were given the following categories:
 
 Commercial processes:
 
 | Abbreviation | Description                             | Category |
 | ------------ | --------------------------------------- | -------- |
-| CHLE         | Commercial space heating large          | #3a      |
-| CHSE         | Commercial space heating small          | #3a      |
-| CCLE         | Commercial space cooling large existing | #1       |
-| CCSE         | Commercial space cooling small existing | #1       |
-| CWLE         | Commercial water heating large existing | #2       |
-| CWSE         | Commercial water heating small existing | #2       |
-| CLIG         | Commercial lighting                     | #1       |
-| CCOK         | Commercial cooking                      | #1       |
-| CREF         | Commercial refrigeration                | #1       |
-| CPLI         | Commercial public lighting              | #8       |
-| COEL         | Commercial other electricity            | #1+#2    |
-| COEN         | Commercial other energy generic         | #1+#2    |
+| CHLE         | Commercial space heating large          | 3a       |
+| CHSE         | Commercial space heating small          | 3a       |
+| CCLE         | Commercial space cooling large existing | 1        |
+| CCSE         | Commercial space cooling small existing | 1        |
+| CWLE         | Commercial water heating large existing | 2       |
+| CWSE         | Commercial water heating small existing | 2       |
+| CLIG         | Commercial lighting                     | 1       |
+| CCOK         | Commercial cooking                      | 1       |
+| CREF         | Commercial refrigeration                | 1       |
+| CPLI         | Commercial public lighting              | 8       |
+| COEL         | Commercial other electricity            | 1+2    |
+| COEN         | Commercial other energy generic         | 1+2    |
 
 
 
@@ -90,35 +105,35 @@ Residential processes:
 
 | Abbreviation | Description                                             | Category |
 | ------------ | ------------------------------------------------------- | -------- |
-| RHDE         | Residential space heating single semi-detached existing | #6a+#7a  |
-| RHRE         | Residential space heating single rural existing         | #6a+#7a  |
-| RHRN         | Residential space heating single rural new              | #6a+#7a  |
-| RHUN         | Residential space heating single urban new              | #6a+#7a  |
-| RHME         | Residential space heating multiple all existing         | #6a+#7a  |
-| RHMN         | Residential space heating multiple all existing new     | #6a+#7a  |
-| RCDE         | Residential space cooling single detached existing      | #4       |
-| RCRE         | Residential space cooling single rural existing         | #4       |
-| RCRN         | Residential space cooling single rural new              | #4       |
-| RCME         | Residential space cooling multiple all existing         | #4       |
-| RCMN         | Residential space cooling multiple all new              | #4       |
-| RWUN         | Residential water heating single urban new              | #5       |
-| RWDE         | Residential water heating single urban existing         | #5       |
-| RWRN         | Residential water heating single rural new              | #5       |
-| RWRE         | Residential water heating single rural existing         | #5       |
-| RWME         | Residential water heating multiple all existing         | #5       |
-| RWMN         | Residential water heating multiple all new              | #5       |
-| RCOK         | Residential cooking                                     | #4       |
-| RCWA         | Residential clothes washing                             | #4       |
-| RCDR         | Residential cloth drying                                | #4       |
-| RDWA         | Residential dish  washing                               | #4       |
-| RLIG         | Residential lighting existing                           | #4b      |
-| RREF         | Residential refrigeration                               | #4       |
-| ROEL         | Residential other electricity                           | #4+#5    |
-| ROEN         | Residential other energy generic                        | #4+#5    |
+| RHDE         | Residential space heating single semi-detached existing | 6a+7a  |
+| RHRE         | Residential space heating single rural existing         | 6a+7a  |
+| RHRN         | Residential space heating single rural new              | 6a+7a  |
+| RHUN         | Residential space heating single urban new              | 6a+7a  |
+| RHME         | Residential space heating multiple all existing         | 6a+7a  |
+| RHMN         | Residential space heating multiple all existing new     | 6a+7a  |
+| RCDE         | Residential space cooling single detached existing      | 4       |
+| RCRE         | Residential space cooling single rural existing         | 4       |
+| RCRN         | Residential space cooling single rural new              | 4       |
+| RCME         | Residential space cooling multiple all existing         | 4       |
+| RCMN         | Residential space cooling multiple all new              | 4       |
+| RWUN         | Residential water heating single urban new              | 5       |
+| RWDE         | Residential water heating single urban existing         | 5       |
+| RWRN         | Residential water heating single rural new              | 5       |
+| RWRE         | Residential water heating single rural existing         | 5       |
+| RWME         | Residential water heating multiple all existing         | 5       |
+| RWMN         | Residential water heating multiple all new              | 5       |
+| RCOK         | Residential cooking                                     | 4       |
+| RCWA         | Residential clothes washing                             | 4       |
+| RCDR         | Residential cloth drying                                | 4       |
+| RDWA         | Residential dish  washing                               | 4       |
+| RLIG         | Residential lighting existing                           | 4b      |
+| RREF         | Residential refrigeration                               | 4       |
+| ROEL         | Residential other electricity                           | 4+5    |
+| ROEN         | Residential other energy generic                        | 4+5    |
 
 
 
-Other processes (timeslice dependent `COM_FR` processes). I don't think we can use consumer load profiles to determine their values.
+There are twelve other timeslice-dependent `COM_FR` but I believe we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `NAME OF THE EXCEL FILE RCA` file).
 
 | Abbreviation | Description             | Category |
 | ------------ | ----------------------- | -------- |
@@ -144,61 +159,27 @@ The same information as in the previous three tables, but now by category (inste
 | Category | Processes                                                  |
 | -------- | ---------------------------------------------------------- |
 | 1     	 | CCLE, CCSE, CLIG, CCOK, CCREF				                      |
+| 1, 2     | COEL, COEN				                                          |
 | 2        | CWLE, CWSE 				                                        |
 | 3        | _None_                                                     |
+| 3a       | CHLE, CHSE				                                          |
 | 4        | RCDE, RCRE, RCRN, RCME, RCMN, RCOK, RCWA, RCDR, RDWA, RREF	|
+| 4b       | RLIG				                                                |
+| 4, 5     | ROEL, ROEN				                                          |
 | 5        | RWUN, RWDE, RWRN, RWRE, RWME,  RWMN                        |
 | 6	       | _None_                                                     |
+| 6a, 7a   | RHDE, RHRE, RHRN, RHUN, RHME, RHMN						              |
 | 7        | _None_                                                     |
 | 8        | CPLI						                                            |
-| 1, 2     | COEL, COEN				                                          |
-| 4, 5     | ROEL, ROEN				                                          |
-| 3a       | CHLE, CHSE				                                          |
-| 6a, 7a   | RHDE, RHRE, RHRN, RHUN, RHME, RHMN						              |
-| 4b       | RLIG				                                                |
 
-a: No summer heating,
-b: No summer lighting,
+*Table ==X==* The division of the processes into the various categories. (ONLY ADD THIS TABLE TO README)
 
-To get the values for the TTD5 profile, I took a population-weighted average of the regional TDD5 profiles. I combined Czech regions into the regional TTD5 profiles in the following way:
+==Discuss normalisation==
 
-| Name (CZ)      | Name (EN)       | Regions	                  | Pop (,000) | Pop (relative) |
-| -------------- | --------------- | -------------------------- | ---------- | -------------- |
-| jižní čechy    | South Bohemia   | South Bohemian, Vysocina   |	1141       | 0.11           |
-| jižní morava   | South Moravia   | South Moravian, Zlin       | 1757       | 0.17           |
-| praha          | Prague          | Praha                      | 1275       | 0.12           |
-| severní čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1237       | 0.12           |
-| severní morava | North Moravia   | Moravian-Silesian, Olomouc | 1801       | 0.17           |
-| střední čechy  | Central Bohemia | Central Bohemia            | 1387       | 0.13           |
-| východní čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1058       | 0.10           |
-| západní čechy  | West Bohemia    | Karlovy Vary, Plzen        |862         | 0.08           |
-
-
+Using the above combinations, I calculated the ratio of the categories per timeslice (the original data is normalised a). I then inserted the various processes into the ==AltTS scenario file== with their category and annual total demand.
 
 # To do's
 
 * Check that categorisation of processes and categorisation of regions is correct,
 * Determine how to average combinations of categories (which weights to assign).
-* Add timeslice values of the consumer load profiles into TIMES-CZ,
-
-
-
-# Other 
-
-How to combine multiple consumer load patterns?
-
-* Take a weighted average (how to determine weights),
-  * Take regular average (or, set weights equal if they are unknown),
-* Add them (not weighing them),
-
-
-
-* Need to know definitions of load profiles & commodities better to know which combinations produce valid results,
-* Why is commercial - public lighting not zero during the day? In baseline/current scenario,
-* Would it be better to generate the scenario file (the table in question) automatically?
-
-
-
-* Import timeseries (all 13 consumer load profiles) and categorise them into time slices.
-  * Is the weighted average of the timeslice values the same as the categorising data into timeslices after taking a weighted average? Test.
-* See how different categories (1-8) really are i.e. how much of a difference is there between heat/non-heat etc ones (for commercial and residential separately)?
+* Add timeslice values of the consumer load profiles into TIMES-CZ

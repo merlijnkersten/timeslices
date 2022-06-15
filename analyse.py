@@ -260,6 +260,18 @@ def perform_fft(input, output, column):
     df = df[df['t_d'] <= 400]
     df.sort_values(by='X', ascending=False).to_csv(output, index=False)
 
+linestyle_st = [
+    'solid',
+    'dashed',
+    'dotted',
+    'dashdot'
+    'o', # circle
+    'v', # triangle
+    's', # square
+    'd', # diamond
+    '+', # plus
+    'x', # x
+]
 
 color_lst = [
     'orangered',
@@ -273,12 +285,12 @@ color_lst = [
     'rebeccapurple',
     'seagreen',
     'saddlebrown',
-    'khaki', # TOO LIGHT REPLACE
     'palevioletred',
     'darkolivegreen',
     'steelblue',
     'navy'
     'dimgrey'
+    'khaki', # TOO LIGHT REPLACE
 ]
 
 
