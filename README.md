@@ -16,6 +16,16 @@ A fourth file, `report_visualisations.py`, is listed in the `graphs` folder, it 
 
 I am working on 'translating' some key functions from `python` to `R` (see `r-translation` branch), and on adding more comments to the code to explain its functionality. 
 
+ /\/\/\/\/\/\/\/\/\/\
+
+Changes in 0.3.0:
+
+* Fixed date and time inconsistencies. The date and time columns of the data files are now converted to UTC, before they are converted into the Czech timezone (CET/CEST). This was done since ČEPS and OTE-ČR, from whom we source the data, both had different time and date methodologies (ČEPS used CET/CEST, OTE-ČR counted the hour of the day). This causes errors because the date and time column is set as index and is used to combine different data tables. The different methodologies created small errors at change from summer time to winter time and back. This is now fixed,
+* Added consumer load profile functionality. Added functions to load, assign, and analyse consumer load profiles to be able to increase the timeslice resolution of various economic processes (in `COM_FR`).
+* Improved FFT. Changed some of the fast Fourier transform functions to increase their temporal resolution.
+
+
+
 # Documentation
 
 This documentation was written for version `v0.2.0` of the code.
@@ -76,6 +86,15 @@ The following data sources were used:
 _Table 4_: Data sources used in this report.
 
 ČEPS is the Czech transmission system operator and OTE-ČR is the Czech electricity and gas market operator. 2015 is the base year of the TIMES-CZ model and 2020 is a milestone year; 2021 is the last year for which full data is available. Hourly (average) values were the highest available temporal resolution. All of the original data files can be found in the data folder on the GitHub repository. 
+
+The data providers used different time and date definitions, see table ==x==. The ČEPS data gives the hour and date in CET/CETS (local time), whereas OTE-ČR gives the local date and counts the hour of the day. For both data files, the data was converted to UTC (31.12.2015 00:00 becomes 2015-12-30 23:00:00+00:00) which was then converted to local date time, date, and hour (CET/CETS).
+
+| Data provider | Data files                     | Date time format | Hours: normal day | Hours: winter time to summer time | Hours: summer time to winter time |
+| ------------- | ------------------------------ | ---------------- | ----------------- | --------------------------------- | --------------------------------- |
+| OTE-ČR        | prices, consumer load profiles | 31-12-2015, 1    | 1-24              | 1-23                              | 1-25                              |
+| ČEPS          | load, generation, cross border | 31.12.2015 00:00 | 0-23              | 0-1, 3-23                         | 0-2, 2-23                         |
+
+*Table ==x==*: Date time conventions of both data providers. 
 
 Some minor cleaning and reshaping actions were performed on the data (see `load.py`). This included calculating total generation, total import, total export, and net export. The data sources were combined into a single data file, `combined 2015-2021.csv`, which can also be found in the data folder on the GitHub repository (see preface).
 
@@ -233,3 +252,23 @@ _Table 10_: Potential definition for extended daynite 3.
 As seen in figure 4, there are a plethora of frequencies between 14 days and 190 days, which are currently not well-understood nor captured by the proposed new combination of timeslices. It is unclear what is driving these cycles. Some may be related to seasonal changes, but the majority cannot easily be transcribed to either daily, weekly, or annual variations in demand or prices. More work is needed to determine what is behind these frequencies and whether they are important to the model. 
 
 Lastly, this report only considered electricity production and consumption. Other commodities (most notably natural gas) and consumer behaviour patterns are also of interest. Due to the general nature of the code (see preface), it should be straightforward to expand the analysis scope to include new time series.
+
+
+
+## Consumer load profile extension
+
+I downloaded the consumer load profiles from XXX (CEPS?) website: ==LINK==. I assigned the various `COM_FR` processes according to the definitions. There are a few special cases:
+
+* Based on Lukáš' recommendation, I added a 'zero heating in summer' option (a), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (b), which reduces the residential lighting load profile (==CODE==) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours.
+* Some processes were awarded a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. ==discuss 3/4==. 
+* The TDD5 load profile was split by region (see table ==XXX==). The population-weighted average of these regional profiles were taken to create a single, national TDD5-profile. For this, the ==13?15== Czech regions were divided into the ==8?== load profile regions as follows:
+
+==add region table== 
+
+==add commercial table==
+
+==add residential table==
+
+==add other COM_FR table==
+
+==discuss CLP FFT==
