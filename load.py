@@ -3,10 +3,13 @@ Functions to load and combine data sets
 '''
 
 import itertools
+from time import strptime
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+from datetime import datetime, date, time, timedelta, tzinfo
+import pytz
 
 def fmt(i):
     '''
@@ -37,6 +40,134 @@ def zero_padded_hour(i):
     else:
         return ' '  + j
 
+"""
+There are two ways to change time:
+
+| Date time format | Normal day | WT to ST  | ST to WT  | Files from (columns)                   |
+| ---------------- | ---------- | --------- | --------- | -------------------------------------- |
+| 31-12-2015, 1    | 0-23       | 0-22      | 0-24      | OTE-ČR: prices, consumer load profiles |
+| 31.12.2015 00:00 | 0-23       | 0-1, 3-23 | 0-2, 2-23 | ČEPS: cross border, load, generation   |
+"""
+
+def to_utc_ceps(i_lst, changeover_dates, st_to_wt):
+
+    st_to_wt_set = set(st_to_wt)
+
+    czech_tz = pytz.timezone('Europe/Prague')
+
+    utc_datetime_lst = []
+
+    for i in i_lst:
+        date_time = datetime.strptime(i, r'%d.%m.%Y %H:%M')
+        local_date = date_time.date()
+  
+        if local_date not in changeover_dates:
+            # regular date; timezone is simply Czech/Prague time (CET/CEST) for whole day
+            local_datetime =  czech_tz.localize(date_time)
+            utc_datetime = local_datetime.astimezone(pytz.utc)
+        elif local_date in st_to_wt:
+            # Summer time to winter time
+            # 02:00 |--> 03:00
+            hour_local = date_time.hour
+            if hour_local != 2:
+                local_datetime =  czech_tz.localize(date_time)
+                utc_datetime = local_datetime.astimezone(pytz.utc)
+            elif local_date in st_to_wt_set:
+                # first occurence of 02:00 >>> it is still summer time
+                st_to_wt_set = st_to_wt_set - {local_date}
+                offset = -2
+                date_time = date_time + timedelta(hours=offset)
+                utc_datetime =  pytz.utc.localize(date_time)
+            else:
+                # second occurence of 02:00 >>> it is winter time
+                offset = -1
+                date_time = date_time + timedelta(hours=offset)
+                utc_datetime = pytz.utc.localize(date_time)
+        else:
+            # Winter time to summer time
+            # 03:00 |--> 02:00
+            local_datetime =  czech_tz.localize(date_time)
+            utc_datetime = local_datetime.astimezone(pytz.utc)   
+        
+        utc_datetime_lst.append(utc_datetime)
+
+    return utc_datetime_lst
+
+
+def to_utc_otecr(i, changeover_dates, st_to_wt):
+    czech_tz = pytz.timezone('Europe/Prague')
+
+    try:
+        date_time= datetime.strptime(i, r'%Y-%m-%d %H')
+
+    except ValueError:
+        # On the ST-to-WT day, hours run to 24 which breaks datetime
+        local_hour = int(i[11:13])
+        if local_hour == 24:
+            local_date = datetime.strptime(i[:10], r'%Y-%m-%d').date()
+            date_time = datetime.combine(local_date, time(22, 0))
+            return pytz.utc.localize(date_time)
+        else:
+            raise ValueError(f'Unexpected value hour value: {i}')
+
+    date_time= datetime.strptime(i, r'%Y-%m-%d %H')
+    local_date = date_time.date()
+    if local_date not in changeover_dates:
+        # regular day
+        local_datetime =  czech_tz.localize(date_time)
+        return local_datetime.astimezone(pytz.utc)
+    elif local_date in st_to_wt:
+        # summer time to winter 
+        offset = -2
+        date_time = date_time + timedelta(hours=offset)
+        return pytz.utc.localize(date_time)
+    else:
+        # winter time to summer 
+        offset = -1
+        date_time = date_time + timedelta(hours=offset)
+        return pytz.utc.localize(date_time)
+
+
+def to_utc(series, kind):
+    wt_to_st_tup = [
+        # winter time to summer time dates
+        # (year, month, day)
+        (2015, 3, 29),
+        (2016, 3, 27),
+        (2017, 3, 26),
+        (2018, 3, 25),
+        (2019, 3, 31),
+        (2020, 3, 29),
+        (2021, 3, 28),    
+    ]
+    st_to_wt_tup = [
+        # summer time to winter time dates
+        # (year, month, day)
+        (2015, 10, 25),
+        (2016, 10, 30),
+        (2017, 10, 29),
+        (2018, 10, 28),
+        (2019, 10, 27),
+        (2020, 10, 25),
+        (2021, 10, 31)
+    ]
+
+    dates_lst = wt_to_st_tup + st_to_wt_tup
+    changeover_dates = [date(i[0], i[1], i[2]) for i in dates_lst]
+    st_to_wt = [date(i[0], i[1], i[2]) for i in st_to_wt_tup]
+    
+    if kind == 'otecr':
+        return series.apply(lambda i: to_utc_otecr(i, changeover_dates, st_to_wt))
+    elif kind == 'ceps':
+        return to_utc_ceps(series, changeover_dates, st_to_wt)
+    else:
+        raise ValueError(f"Uknown kind: {kind} (not 'otecr' or 'ceps')")
+
+
+def czech_time(i):
+    czech_tz = pytz.timezone('Europe/Prague')
+    return i.astimezone(czech_tz).replace(tzinfo=None)
+
 
 def load_generation(load_path, generation_path):
     '''
@@ -48,30 +179,25 @@ def load_generation(load_path, generation_path):
 
     # Read load data
     load_df = pd.read_csv(load_path, sep=";", header=2)
-    # Create a timestamp column based on "Date" and set this as the index
-    load_df["Date and time"] = pd.to_datetime(load_df["Date"], format=r"%d.%m.%Y %H:%M")
-    load_df.set_index("Date and time", inplace=True)
+
+    load_df["Date and time [UTC]"] = to_utc(load_df['Date'], 'ceps')
+    load_df.set_index("Date and time [UTC]", inplace=True)
+
     # Remove unnecessary columns
     load_df.drop(columns=["Unnamed: 3", "Date"], inplace=True)
 
     # Read generation data
     generation_df = pd.read_csv(generation_path, sep=';', header=2)
-    # Create a timestamp column based on "Date" and set this as the index    
-    generation_df["Date and time"] = pd.to_datetime(generation_df["Date"], format=r"%d.%m.%Y %H:%M")
-    generation_df.set_index("Date and time", inplace=True)
+
+    generation_df["Date and time [UTC]"] = to_utc(generation_df['Date'], 'ceps')
+    generation_df.set_index("Date and time [UTC]", inplace=True)
     # Remove unnecessary columns
     generation_df.drop(columns=["Unnamed: 10", "Date"], inplace=True)
     # Find total generation by summing generation of various technologies
     generation_df["Generation sum [MW]"] = generation_df.sum(axis=1)
 
     # Merge the generation and load dictionaries based on their shared index.
-    combined_df = pd.merge(generation_df, load_df, left_index=True, right_index=True)
-    # Create data, year, month, and hour columns
-    combined_df["Date"] = combined_df.index.date
-    combined_df["Year"] = combined_df.index.year
-    combined_df["Month"] = combined_df.index.month
-    combined_df["Hour"] = combined_df.index.hour
-
+    combined_df = pd.merge(load_df, generation_df, left_index=True, right_index=True)
     # Find 'net' export (without taking losses into consideration)
     combined_df["Net export (generation - load) [MW]"] = combined_df["Generation sum [MW]"] - combined_df["Load including pumping [MW]"]
 
@@ -118,13 +244,14 @@ def generate_cross_border_csv(lst):
     dfs_lst = []
 
     # Translation dictionary from TSO names to their respective countries
-    tso_dct = {
+    col_dct = {
+        # original : new
         'PSE Actual [MW]'   : 'Poland [MW]',
         'SEPS Actual [MW]'  : 'Slovakia [MW]',
         'APG Actual [MW]'   : 'Austria [MW]',
         'TenneT Actual [MW]': 'Germany (south) [MW]',
         '50HzT Actual [MW]' : 'Germany (north) [MW]',
-        'CEPS Actual [MW]'  : 'Net import [MW]'
+        'CEPS Actual [MW]'  : 'Net import [MW]',
     }
 
     # Unecessary columns, will be removed later.
@@ -136,12 +263,12 @@ def generate_cross_border_csv(lst):
         # Read cross border data
         df = pd.read_csv(path, skiprows=2, sep=';')
         # Create a timestamp column based on "Date" and set this as the index
-        df["Date and time"] = pd.to_datetime(df["Date"], format=r"%d.%m.%Y %H:%M")
-        df.set_index("Date and time", inplace=True)       
+        df["Date and time [UTC]"] = to_utc(df["Date"], "ceps")
+        df.set_index("Date and time [UTC]", inplace=True)
         # Drop unecessary columns
         df.drop(columns=redundant_columns, inplace=True)
         # Rename columns from TSO names to country names
-        df.columns = [tso_dct[i] for i in list(df.columns)]
+        df.columns = [col_dct[i] for i in list(df.columns)]
         # Append the Dataframe to the Datafraemes list
         dfs_lst.append(df)
 
@@ -157,8 +284,8 @@ def generate_cross_border_csv(lst):
 
 def cross_border(cross_border_path):
     df = pd.read_csv(cross_border_path)
-    df["Date and time"] = pd.to_datetime(df["Date and time"], format=r"%Y-%m-%d %H:%M:%S")
-    df.set_index("Date and time", inplace=True)                             
+    df["Date and time [UTC]"] = pd.to_datetime(df["Date and time [UTC]"])
+    df.set_index("Date and time [UTC]", inplace=True)                             
 
     return df
 
@@ -187,12 +314,16 @@ def generate_price_csv(prices_paths, output_path):
         df = df[ df['Hour'] != 25 ]
         # Create a date and time column by cominbining the Day and Hour columns, setting it to datetime
         df['Date and time'] = df['Day'].dt.strftime(r'%Y-%m-%d') + df['Hour'].apply(zero_padded_hour)
-        df['Date and time'] = pd.to_datetime(df['Date and time'], format=r'%Y-%m-%d %H')
-        # Use this column as the index, and remove the now superfluous day and our columns
-        df.set_index("Date and time", inplace=True)
-        df.drop(columns=['Day', 'Hour'], inplace=True)
+        df['Date and time [UTC]'] = to_utc(df['Date and time'], 'otecr')
+        df.set_index("Date and time [UTC]", inplace=True)
+        df.drop(columns=['Day', 'Hour', 'Date and time'], inplace=True)
         # Rename the remaining price columns.
-        df.columns = ['Price [EUR/MWh]', 'Price [CZK/MWh]']
+        col_dct = {
+            # original : new
+            'Marginal price CZ (EUR/MWh)' : 'Price [EUR/MWh]',
+            'Marginal price CZ (CZK/MWh)' : 'Price [CZK/MWh'
+        }
+        df.columns = [col_dct[i] for i in list(df.columns)]
         # Append the dataframe to the list of dataframes
         df_lst.append(df)
     
@@ -207,8 +338,65 @@ def price(path):
     '''
     # Read file
     df = pd.read_csv(path)
-    # Change Date and time column to a datetime column and set it as the index
-    df['Date and time'] = pd.to_datetime(df['Date and time'], format=r'%Y-%m-%d %H', )
-    df.set_index('Date and time', inplace=True)
+    df["Date and time [UTC]"] = pd.to_datetime(df["Date and time [UTC]"])
+    df.set_index("Date and time [UTC]", inplace=True)
+    return df    
 
+
+def generate_consumer_load_profile_csv(directory, output):
+    files = [f'{directory}/consumer load profile {year}.xls' for year in range(2015,2022)]
+
+    df_lst = []
+
+    for file in files:
+        '''
+        columns = pd.read_excel(file, skiprows=4, nrows=1).columns
+
+        type_dct = {
+            "Day" : str,
+            "Hour" : str,
+            "Hour number in year" : int,
+        }
+
+        for column in columns:
+            if column not in type_dct.keys():
+                type_dct[column] = float
+        '''
+
+        df = pd.read_excel(file, skiprows=4)
+        df = df[df['Day'].notna()]
+        df['Hour_temp'] = df['Hour'].astype(int).apply(zero_padded_hour) 
+        df['Date and time'] = df[['Day', 'Hour_temp']].astype(str).agg(''.join, axis=1)
+        df['Date and time [UTC]'] = to_utc(df['Date and time'], 'otecr')
+        df.columns = [col.replace('\n','') for col in df.columns]
+        df.drop(['Hour_temp','Date and time', 'Day', 'Hour', 'Hour number in year'], inplace=True, axis=1)
+        df.set_index('Date and time [UTC]', inplace=True)
+        df_lst.append(df)
+
+
+    pd.concat(df_lst).to_csv(output)
+
+def consumer_load_profile(path):
+    df = pd.read_csv(path)
+    df["Date and time [UTC]"] = pd.to_datetime(df["Date and time [UTC]"])
+    df.set_index("Date and time [UTC]", inplace=True)   
+    return df 
+
+
+def polish(df):
+    df.reset_index(inplace=True)
+    df['Date and time [CZ]'] = df['Date and time [UTC]'].apply(czech_time)
+    df.set_index('Date and time [UTC]', inplace=True)
+    df["Date"] = df['Date and time [CZ]'].dt.date
+    df["Year"] = df['Date and time [CZ]'].dt.year
+    df["Month"] = df['Date and time [CZ]'].dt.month
+    df["Hour"] = df['Date and time [CZ]'].dt.hour
     return df
+
+def merge(df_lst):
+    df = df_lst[0]
+    rest = df_lst[1:]
+    for next_df in rest:
+        df = pd.merge(df, next_df, left_index=True, right_index=True)
+    
+    return polish(df)
