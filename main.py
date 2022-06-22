@@ -1,7 +1,6 @@
 '''
 Run script, using functions from other scripts
 '''
-from audioop import cross
 from datetime import datetime, date, time, timedelta, tzinfo
 import itertools
 import matplotlib.pyplot as plt
@@ -53,8 +52,8 @@ combined_df['Season weekday 1 daynite'] = assign.combine_timeslices(combined_df,
 #combined_df['Season daynite'] = assign.combine_timeslices(combined_df, 'Season', 'Daynite')
 
 # Optional: save combined data file with timeslices
-PATH = os.path.join(data_path, 'combined 2015-2021.csv')
-combined_df.to_csv(PATH)
+#PATH = os.path.join(data_path, 'combined 2015-2021.csv')
+#combined_df.to_csv(PATH)
 
 # Run various analysis scripts
 

@@ -87,7 +87,6 @@ def daynite(df, column):
     for index in day_ids:
         daynite_dct[index] = 'Day'
     
-    # Need to do it this week due to daylight saving changing oddities in night_ids (better: len(daynite_dct))
     test = len(daynite_dct) == df.shape[0]
     if not test:
         raise Exception(f'DataFrame and Night/Peak/Day index arrays do not have same length: {df.shape[0]} vs {len(daynite_dct)}')         

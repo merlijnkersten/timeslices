@@ -4,6 +4,7 @@ Functions to analyse and visualise the data.
 To do: re-create code for generation load/etc duration graphs.
   - Automatic plotting was difficult to get right (and not necessarily important).
     work on it was therefore abandoned. 
+  - Homogenise plotting approach.
 
 '''
 
@@ -417,7 +418,7 @@ def fft_individual_visualisation(directory, output):
 
 def plot_distribution(directory):
     '''
-    Plots basic distribution of data, using Seaborn (instead of Matplotlib).
+    Plots basic distribution of data, using Seaborn for a change (instead of Matplotlib).
     directory: folder containing solely files from get_statistics function (analyse.py)
     '''
     os.chdir(directory)
