@@ -106,7 +106,7 @@ The load, import, export and price data were then categorised into the two origi
 3. Weekday 2: the day of the week (Monday, Tuesday, etc),
 4. Extended daynite 1: one night time slices, three day time slices. See table 6 for the chosen cut-off times.
 5. Extended daynite 2: two night time slices, six day time slices. See table 7 for the chosen cut-off times.
-6. Hour: hourly timeslices (00:00, 01:00, ...,, 23:00).
+6. Hour: hourly timeslices (00:00, 01:00, ..., 23:00).
 
 As discussed in the preface, the functions that perform these are agnostic as to what time series they are categorising which means that other variables can be categorised in the same way, and that functions with new timeslices can easily be added. 
 
@@ -184,9 +184,7 @@ _Figure 3_: Same data as in figure 2 but now split by season (see table 1), to g
 <img src="graphs/FFT.png" alt="Fast Fourier transform" title="Fast Fourier transform" />
 _Figure 4_: This figure shows the results of the fast Fourier transform analysis for each variable. On the left, it shows the twenty dominant frequencies lower than 30 days, on the right it shows the twenty dominant frequencies higher than 30 days. Note that the spectrums are normalised. This allows for easier comparison of dominant frequencies across the different time series.
 
-==TODO==
-
-The plots for the consumer load profile FFTs are not given here, but can be found on [Github](LINK LINK LINK). Compared to previous variables ==change==, the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent.
+The plots for the consumer load profile FFTs are not given here, but can be found on [Github](https://github.com/merlijnk/timeslices/tree/main/graphs/consumer%20load%20profile%20FFTs). Compared to the other variables, the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent.
 
 <img src="graphs/Distribution.png" alt="Distribution" title="Distribution" />
 _Figure 5_: This figure shows an example of the distribution graphs, in this case for group season - weekday 1 - daynite (group D). The blue dot is the mean value, the smaller blue dots give the mean plus/minus the standard deviation. The red dot gives the median value, the red crosses give the minimum and maximum values, and the 10% and 90% percentiles.
@@ -240,7 +238,7 @@ The data used covers seven years, which should give a good understanding of annu
 
 The best way to test the effect of new timeslices is to add them to the TIMES-CZ model. This is quite a labour intensive process, as other statistics also need to be updated. Some of this could be automated (using the data available, new scenario files for processes like EXPELCHIGGA and IMPELCHIGA could  be generated) but it would still require careful setting up of the relevant script, running the model, and analysing the model outputs.
 
-This has not been fully done yet for the proposed season - weekday 1 - daynite group (D) of timeslices, and thus further work is needed to explore the exact impacts on the model of using this new group. Currently, on the EUA-revision branch, I have added a new scenario file [`Scen_AltTS.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_AltTS.xlsx) which incorporates the seaon - weekday 1 - daynite group (D) with a corresponding [`Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx) scenario file which replaces [`Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx) (and ultimately, [`Scen_CZ_elcprice_SEK.xlsx`](https://github.com/LukasR33/CZ_V02-/blob/EUA_revision/SuppXLS/Scen_CZ_elcprice_SEK.xlsx)). However, the temporal resolution of other key economic and energy statistics should also be improved to be able to accurately determine the effect of the new timeslices. 
+This has not been fully done yet for the proposed season - weekday 1 - daynite group (D) of timeslices, and thus further work is needed to explore the exact impacts on the model of using this new group. Currently, on the EUA-revision branch, I have added a new scenario file `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` which incorporates the seaon - weekday 1 - daynite group (D) with a corresponding `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx` scenario file which replaces `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx` (and ultimately, `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK.xlsx`). However, the temporal resolution of other key economic and energy statistics should also be improved to be able to accurately determine the effect of the new timeslices. 
 
 As mentioned previously, many other timeslices remain unexplored. The data gathered suggests that perhaps the spring and autumn seasonal timeslices could be merged, as for some data points they show very similar means and distributions. Alternatively, they could be split and merged; creating an early-Spring/late-Autumn timeslice (capturing the onset/end of Winter) and an late-Spring/early-Autumn timeslice (capturing the onset/end of Summer). Furthermore, the current daynite timeslices could be expanded. The current definition of 'Night' lasting 12-hours appears to be too broad as the reduced demand does not last for so long, perhaps an alternative to the extended daynite timeslices discussed in this report. An alternative definition, extended daynite 3, is given in table 11.
 
@@ -264,16 +262,16 @@ Lastly, this report only considered electricity production and consumption. Othe
 
 The consumer load profile data is divided into the following categories:
 
-| Category | Type        | Description (translated)                                     |
-| -------- | ----------- | ------------------------------------------------------------ |
-| 1        | Commercial  | No electricity for heat or hot water                         |
+| Category | Type        | Description (translated)                                                 |
+| -------- | ----------- | ------------------------------------------------------------------------ |
+| 1        | Commercial  | No electricity for heat or hot water                                     |
 | 2        | Commercial  | Heat accumulation (hot water & heating, includes another source of heat) |
-| 3        | Commercial  | Electricity for heating including heat pumps                 |
-| 4        | Residential | No electricity for heat or hot water                         |
-| 5        | Residential | Heat accumulation (usually, hot water)                       |
-| 6        | Residential | Electricity for heating (includes another source of heat)    |
-| 7        | Residential | Electricity for heating including heat pumps                 |
-| 8        | Commercial  | Public lighting                                              |
+| 3        | Commercial  | Electricity for heating including heat pumps                             |
+| 4        | Residential | No electricity for heat or hot water                                     |
+| 5        | Residential | Heat accumulation (usually, hot water)                                   |
+| 6        | Residential | Electricity for heating (includes another source of heat)                |
+| 7        | Residential | Electricity for heating including heat pumps                             |
+| 8        | Commercial  | Public lighting                                                          |
 
 _Table 12_: Consumer load profile categories ([Czech source](https://www.eru.cz/sites/default/files/upload/Priloha_4_541.pdf)).
 
@@ -290,11 +288,11 @@ The TDD5 category is split in 8 regions. To get a value for this category, I too
 | Východní Čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1,05       | 0.10           |
 | Západní Čechy  | West Bohemia    | Karlovy Vary, Plzen        | 862        | 0.08           |
 
-_Table 13_: Division of Czech regions into the TDD5 regions. ==Add source (Wikipedia)==.
+_Table 13_: Division of Czech regions into the TDD5 regions (Population data from [ČSÚ](https://www.czso.cz/csu/czso/population-of-municipalities-1-january-2022)).
 
-Furthermore, based on Lukáš' recommendation, I added a 'zero heating in summer' option (labeled 'a'), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (labeled 'b'), which reduces the residential lighting load profile (`RLIG`) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours. I also awarded some processes a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. TDD3 and TDD4 do differ slightly on an annual basis (==X== is lower in winter ==check== ==todo==) ==todo more commentary==. 
+Furthermore, based on Lukáš' recommendation, I added a 'zero heating in summer' option (labeled 'a'), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (labeled 'b'), which reduces the residential lighting load profile (`RLIG`) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours. I also awarded some processes a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. TDD4 and TDD5 do differ slightly (TDD5 has consitently higher values during day and peak timeslices) but they exhibit a similar pattern overall.
 
-Then I categorised all timeslice-dependent TODO HERE `COM_FR` processes listed in the `CZ_V02-\VT_CZ_TRA_V2.2.xlsx` file ==is this the correct file isn't it RCA==.
+Next I categorised all timeslice-dependent `COM_FR` processes listed in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file, see table 14 below. The full name of the processes can be found in table 16.
 
 | Category | Processes                                                  |
 | -------- | ---------------------------------------------------------- |
@@ -314,9 +312,9 @@ Then I categorised all timeslice-dependent TODO HERE `COM_FR` processes listed i
 
 _Table 14_ The division of the processes into the various categories.
 
-Using the above combinations, I calculated the ratio of the categories per timeslice (the original data is normalised). I then inserted the various processes into the ==AltTS scenario file== with their category and annual total demand.
+Using the above combinations, I calculated the ratio of the categories per timeslice (the original data is normalised). I then inserted the various processes into the `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` scenario file with their category and annual total demand.
 
-There are twelve other timeslice-dependent `COM_FR` but I believe we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `NAME OF THE EXCEL FILE RCA` file).
+There are twelve other `COM_FR` processes but I believe we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file).
 
 | Abbreviation | Description             |
 | ------------ | ----------------------- |
