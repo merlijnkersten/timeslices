@@ -4,11 +4,11 @@ Functions to analyse and visualise the data.
 To do: re-create code for generation load/etc duration graphs.
   - Automatic plotting was difficult to get right (and not necessarily important).
     work on it was therefore abandoned. 
+  - Homogenise plotting approach.
 
 '''
 
 import itertools
-from multiprocessing.sharedctypes import Value
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -227,11 +227,12 @@ def perform_fft(input, output, column):
     column: Load [MW] etc
     '''
     df = pd.read_csv(input)
-    
+
     #From: https://pythonnumericalmethods.berkeley.edu/notebooks/chapter24.04-FFT-in-Python.html
 
     # Fourier transform
     data = df[column].to_numpy()
+
     X = fft(data)
     N = len(X)
     n = np.arange(N)
@@ -240,9 +241,10 @@ def perform_fft(input, output, column):
     freq = n/T 
 
     # Get the one-sided spectrum & frequency
-    n_oneside = N//2
+    # WHAT DOES THE -1 DO HERE & WHY DOES IT WORK
+    n_oneside = N//2 - 1
     f_oneside = freq[:n_oneside]
-
+    
     # Frequencies in hours and days
     t_h = 1/f_oneside / (60 * 60)
     t_d = 1/f_oneside / (60 * 60 * 24)
@@ -256,10 +258,41 @@ def perform_fft(input, output, column):
 
     df = pd.DataFrame(dct)
 
-    # Filter results: only values with an amplitude higher than 25 and a frequency lower than one year (365 days)
-    df = df[(df['X']>=25) & (df['t_d'] <= 365) ]
-    print(output)
+    df = df[df['t_d'] <= 400]
     df.sort_values(by='X', ascending=False).to_csv(output, index=False)
+
+linestyle_st = [
+    'solid',
+    'dashed',
+    'dotted',
+    'dashdot'
+    'o', # circle
+    'v', # triangle
+    's', # square
+    'd', # diamond
+    '+', # plus
+    'x', # x
+]
+
+color_lst = [
+    'orangered',
+    'gold',
+    'limegreen',
+    'cornflowerblue',
+    'orchid',
+    'darkorange',
+    'darkturquoise',
+    'brown',
+    'rebeccapurple',
+    'seagreen',
+    'saddlebrown',
+    'palevioletred',
+    'darkolivegreen',
+    'steelblue',
+    'navy'
+    'dimgrey'
+    'khaki', # TOO LIGHT REPLACE
+]
 
 
 def fft_visualisation(directory):
@@ -269,60 +302,123 @@ def fft_visualisation(directory):
     '''
     os.chdir(directory)
     files = os.listdir(directory)
+    
+    fig, axs = plt.subplots(len(files), 3, sharey=True, sharex='col', figsize=(10,11), tight_layout=True)
+    if len(files) > len(color_lst):
+        raise ValueError(f"{len(files)} files but only {len(color_lst)} available.")
 
-    dct = {
-        # Add own file names here      
-        # 'path_in_directory.csv' : [visualisation position, 'Column label', 'Plot colour']
-        'load fft.csv' : [0, 'Load', 'cornflowerblue'],
-        'exports fft.csv' : [1, 'Exports', 'limegreen'],
-        'imports fft.csv' : [2, 'Imports', 'gold'],
-        'price-eur fft.csv' : [3, 'Prices', 'orangered'],
-        'price-czk fft.csv' : [4, 'Prices', 'mediumorchid']        
-    }
-
-    fig, axs = plt.subplots(len(dct), 2, sharey=True, sharex='col', figsize=(10,11), tight_layout=True)
-
+    i = 0
     for file in files:
+
+        label = file.split('/')[-1].split(' ')[0]
+        color = color_lst[i]
         
-        pos = dct[file][0]
-        label = dct[file][1]
-        color = dct[file][2]
-
         df = pd.read_csv(file)
-        X_d_max = df['X'].max()
+        X_max = df['X'].max()
 
-        cutoff = 30 #days, cutoff for left and right graph.
+        cutoff_1 = 1.25 #days, (30 hours) cutoff for left and right graph.
+        cutoff_2 = 30 # days
 
-        short_df = df[df['t_d']<=cutoff].nlargest(n=20, columns='X')
-        X_d = short_df['X'].to_numpy() #y values
-        t_d = short_df['t_d'].to_numpy() 
-        X_d = X_d/X_d_max # normalised x values
+        short_df = df[df['t_d']<=cutoff_1].nlargest(n=20, columns='X')
+        X = short_df['X'].to_numpy() #y values
+        t_h = short_df['t_h'].to_numpy() 
+        X = X/X_max # normalised x values
 
-        axs[pos,0].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
-        axs[pos,0].set_xticks([1, 7, 14, 21, 28])
-        axs[pos,0].grid()
-        axs[pos,0].set_ylabel(label, rotation=0, labelpad=22)
+        axs[i,0].stem(t_h, X, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[i,0].set_xticks([6, 12, 18, 24])
+        axs[i,0].grid()
+        axs[i,0].set_ylabel(label, rotation=0, labelpad=22)
 
 
-        long_df = df[df['t_d']>=cutoff].nlargest(n=20, columns='X')
+        med_df = df[(cutoff_1 <= df['t_d']) & (df['t_d']<=cutoff_2)].nlargest(n=20, columns='X')
+        X_d = med_df['X'].to_numpy()
+        t_d = med_df['t_d'].to_numpy()
+        X_d = X_d/X_max
+
+        axs[i,1].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[i,1].set_xticks([1, 7, 14, 21, 28])
+        axs[i,1].grid()
+
+        long_df = df[df['t_d']>=cutoff_2].nlargest(n=20, columns='X')
         X_d = long_df['X'].to_numpy()
         t_d = long_df['t_d'].to_numpy()
-        X_d = X_d/X_d_max
+        X_d = X_d/X_max
 
-        axs[pos,1].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
-        axs[pos,1].set_xticks([30, 91, 183, 274, 365])
-        axs[pos,1].grid()
+        axs[i,2].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[i,2].set_xticks([30, 91, 183, 274, 365])
+        axs[i,2].grid()
 
-    axs[len(dct),0].set_xlabel('Frequency (days)')
-    axs[len(dct),1].set_xlabel('Frequency (days)')
+        i += 1
+
+    axs[i-1,0].set_xlabel('Frequency (hours)')
+    axs[i-1,1].set_xlabel('Frequency (days)')
+    axs[i-1,2].set_xlabel('Frequency (days)')
     fig.suptitle('Fast Fourier transform (2015-2021)')
     plt.savefig(file.replace('.csv', '.png'), dpi=300, format='png')
     plt.show()
 
 
+def fft_individual_visualisation(directory, output):
+    os.chdir(directory)
+    files = os.listdir(directory)
+       
+    if len(files) > len(color_lst):
+        raise ValueError(f"{len(files)} files but only {len(color_lst)} available.")
+    i=0
+    for file in files:
+        fig, axs = plt.subplots(1, 3, sharey=True, figsize=(8,5), tight_layout=True)
+
+        label = file.split('/')[-1].split(' ')[0]
+        color = color_lst[i]
+        
+        df = pd.read_csv(file)
+        X_max = df['X'].max()
+
+        cutoff_1 = 25/24 #days, (30 hours) cutoff for left and right graph.
+        cutoff_2 = 30 # days
+
+        short_df = df[df['t_d']<=cutoff_1].nlargest(n=20, columns='X')
+        X = short_df['X'].to_numpy() #y values
+        t_h = short_df['t_h'].to_numpy() 
+        X = X/X_max # normalised x values
+
+        axs[0].stem(t_h, X, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[0].set_xticks([6, 12, 18, 24])
+        axs[0].grid()
+        axs[0].set_title('Day')
+
+        med_df = df[(cutoff_1 <= df['t_d']) & (df['t_d']<=cutoff_2)].nlargest(n=20, columns='X')
+        X_d = med_df['X'].to_numpy()
+        t_d = med_df['t_d'].to_numpy()
+        X_d = X_d/X_max
+
+        axs[1].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[1].set_xticks([1, 7, 14, 21, 28])
+        axs[1].grid()
+        axs[1].set_title('Month')
+
+        long_df = df[df['t_d']>=cutoff_2].nlargest(n=20, columns='X')
+        X_d = long_df['X'].to_numpy()
+        t_d = long_df['t_d'].to_numpy()
+        X_d = X_d/X_max
+
+        axs[2].stem(t_d, X_d, markerfmt=',', linefmt=color, basefmt='grey')
+        axs[2].set_xticks([30, 91, 183, 274, 365])
+        axs[2].grid()
+        axs[2].set_title('Year')
+
+        axs[0].set_xlabel('Frequency (hours)')
+        axs[1].set_xlabel('Frequency (days)')
+        axs[2].set_xlabel('Frequency (days)')
+        fig.suptitle(f'Fast Fourier transform - {label} (2015-2021)')
+        plt.savefig(f'{output} {label}.png', dpi=300, format='png')
+        plt.show()
+        i+=1
+
+
 def plot_distribution(directory):
     '''
-    Plots basic distribution of data, using Seaborn (instead of Matplotlib).
+    Plots basic distribution of data, using Seaborn for a change (instead of Matplotlib).
     directory: folder containing solely files from get_statistics function (analyse.py)
     '''
     os.chdir(directory)

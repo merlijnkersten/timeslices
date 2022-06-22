@@ -16,6 +16,16 @@ A fourth script, `report_visualisations.py`, listed in the `graphs` folder, cont
 
 I am working on 'translating' some key functions from `python` to `R` (see `r-translation` branch), and on adding more comments to the code to explain its functionality. 
 
+ /\/\/\/\/\/\/\/\/\/\
+
+Changes in 0.3.0:
+
+* Fixed date and time inconsistencies. The date and time columns of the data files are now converted to UTC, before they are converted into the Czech timezone (CET/CEST). This was done since ČEPS and OTE-ČR, from whom we source the data, both had different time and date methodologies (ČEPS used CET/CEST, OTE-ČR counted the hour of the day). This causes errors because the date and time column is set as index and is used to combine different data tables. The different methodologies created small errors at change from summer time to winter time and back. This is now fixed,
+* Added consumer load profile functionality. Added functions to load, assign, and analyse consumer load profiles to be able to increase the timeslice resolution of various economic processes (in `COM_FR`).
+* Improved FFT. Changed some of the fast Fourier transform functions to increase their temporal resolution.
+
+
+
 # Documentation
 
 This documentation was written for version `v0.2.0` of the code and updated for `v0.3.0`.
