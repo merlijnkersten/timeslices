@@ -4,7 +4,7 @@
 
 All of the code used to import, analyse, and visualise the data in the report below can be found in this repository. There are two versions of the code. `v0.1.0` consists of some initial scripts used to create simple load duration graphs. It has limited functionality beyond producing load duration graphs based on the original season and daynite timeslices. This version was produced in April 2022.
 
-`v0.2.0` is a more fully-fledged suite of scripts with more features and more generalised functions. `v0.2.0` was used in the report below and was released in mid-May 2022. The basic structure is as follows:
+`v0.2.0` and `v0.3.0` brought a more fully-fledged suite of scripts with additional features and generalised functions. `v0.2.0` was used in the report below and was released in mid-May 2022. `v0.3.0` added UTC support and included consumer load profiles. The basic structure is as follows:
 
 1. `load.py`: these functions are used to import and clean the data,
 2. `assign.py`: this script contains functions that assign the various timeslices to the time series,
@@ -12,23 +12,13 @@ All of the code used to import, analyse, and visualise the data in the report be
 
 All these functions can be run from the `main.py` file or individually in their respective scripts. The idea behind organising the functions and scripts like this is to make it easier to maintain and extend the functions. To this end, most functions are written in a very generalised manner, which should make it easy to add support for additional timeslices, time series, and other improvements. An important factor here is that the functions are (mostly) agnostic to the timeslice or time series used, which means that it is straightforward to add new timeslices (such as the ones mentioned in the discussion) or to use the current functions to analyse new time series. 
 
-A fourth file, `report_visualisations.py`, is listed in the `graphs` folder, it contains some rough-and-ready code to generate some of the visualisations used in this report. 
+A fourth script, `report_visualisations.py`, listed in the `graphs` folder, contains some rough-and-ready code to generate some of the visualisations used in this report. 
 
 I am working on 'translating' some key functions from `python` to `R` (see `r-translation` branch), and on adding more comments to the code to explain its functionality. 
 
- /\/\/\/\/\/\/\/\/\/\
-
-Changes in 0.3.0:
-
-* Fixed date and time inconsistencies. The date and time columns of the data files are now converted to UTC, before they are converted into the Czech timezone (CET/CEST). This was done since ČEPS and OTE-ČR, from whom we source the data, both had different time and date methodologies (ČEPS used CET/CEST, OTE-ČR counted the hour of the day). This causes errors because the date and time column is set as index and is used to combine different data tables. The different methodologies created small errors at change from summer time to winter time and back. This is now fixed,
-* Added consumer load profile functionality. Added functions to load, assign, and analyse consumer load profiles to be able to increase the timeslice resolution of various economic processes (in `COM_FR`).
-* Improved FFT. Changed some of the fast Fourier transform functions to increase their temporal resolution.
-
-
-
 # Documentation
 
-This documentation was written for version `v0.2.0` of the code.
+This documentation was written for version `v0.2.0` of the code and updated for `v0.3.0`.
 
 ## Introduction
 
@@ -88,7 +78,7 @@ _Table 4_: Data sources used in this report.
 
 ČEPS is the Czech transmission system operator and OTE-ČR is the Czech electricity and gas market operator. 2015 is the base year of the TIMES-CZ model and 2020 is a milestone year; 2021 is the last year for which full data is available. Hourly (average) values were the highest available temporal resolution available. All of the original data files can be found in the data folder on the GitHub repository. 
 
-The data providers used different time and date definitions, see table 5. The ČEPS data gives the hour and date in CET/CETS (local time), whereas OTE-ČR gives the local date and counts the hour of the day. For both data files, the data was converted to UTC which was then converted to the Czech timezone (CET/CETS).
+The data providers use different time and date definitions, see table 5. The ČEPS data gives the hour and date in CET/CETS (local time), whereas OTE-ČR gives the local date and counts the hour of the day. For both data files, the data was converted to UTC which was then converted to the Czech timezone (CET/CETS).
 
 | Data provider | Data files                     | Date time format | Hours: normal day | Hours: winter time to summer time | Hours: summer time to winter time |
 | ------------- | ------------------------------ | ---------------- | ----------------- | --------------------------------- | --------------------------------- |
@@ -130,14 +120,14 @@ _Table 6_: Definition of the extended daynite 1 timeslices.
 | Day-5              | 16:00-17:00 |
 | Day-5              | 18:00-19:00 |
 
-_Table 8_: Definition of the extended daynite 2 timeslices.
+_Table 7_: Definition of the extended daynite 2 timeslices.
 
 | Code | Weekday     | Length | Description                                             |
 | ---- | ----------- | ------ | ------------------------------------------------------- |
 | L    | Working day | 68.7%  | Any working day (most weeks: Monday to Friday).         |
 | H    | Weekend day | 31.3%  | Weekend days (Saturday and Sunday) and public holidays. |
 
-_Table 9_: Definition of the weekday timeslices. The length of the timeslices, expressed as an annual percentage, is calculated over 2015-2021 but can vary year-to-year due to differences of the date of public holidays. Note that the length of the working day/weekend day slices is not exactly 5/7 and 2/7 (71.4% and 28.6%), respectively, due to the inclusion of public holidays as weekend days. 
+_Table 8_: Definition of the weekday timeslices. The length of the timeslices, expressed as an annual percentage, is calculated over 2015-2021 but can vary year-to-year due to differences of the date of public holidays. Note that the length of the working day/weekend day slices is not exactly 5/7 and 2/7 (71.4% and 28.6%), respectively, due to the inclusion of public holidays as weekend days. 
 
 These timeslices were then combined to into groups, based on my judgement of which combinations would produce interesting and usable results. This was broadly done by including at least one long-term timeslice (season, month) and at least one short-term timeslice (daynite, hour, etc). Not all groups were analysed extensively due to time constraints.
 
@@ -158,7 +148,7 @@ These timeslices were then combined to into groups, based on my judgement of whi
 | L    | Month - weekday 1 - daynite             |  72 (12 × 2 × 3) |
 | M    | Month - hour                            |  288 (12 × 24)   |
 
-_Table 10_: The different timeslice groupings considered in this report. The _Null_ group is the current timeslices group used in the TIMES-CZ model. 'Size' gives the total number of timeslices in the group.
+_Table 9_: The different timeslice groupings considered in this report. The _Null_ group is the current timeslices group used in the TIMES-CZ model. 'Size' gives the total number of timeslices in the group.
 
 Load, import, export, and price duration graphs were created for each group of timeslices, and the key statistics of their distribution were recorded. When comparing the suitability of different groups of timeslices, the main focus was to determine whether these timeslices accurately captured the major periodic trends in the data, and whether the individual timeslices created a unique view of the data: in other words whether there were any other timeslices within the same group that provided a similar view of the data, therefore leading to redundencies. 
 
@@ -173,20 +163,25 @@ To aid the graphical analysis of the data, I performed a Fourier transforms of t
 ## Results
 
 <img src= "graphs/Annual rolling average.png" alt="Annual hourly load data with rolling average" title="Annual hourly load data with rolling average" />
+
 _Figure 1_: This figure shows the hourly annual load in 2021 (shaded grey) as well as the 20-day rolling average (blue line). This shows how one of the main frequencies driving the load is the annual (as well as daily) variance.
 
 <img src="graphs/Daily average annual.png" alt="Daily average load" title="Daily average load" style="zoom:25%;" />
+
 _Figure 2_: This data shows the average daily load from 2015-2021 (blue line) as well the 25%-75% percentile range (shaded grey)
 
 <img src="graphs/Seasonal daily mean.png" alt="Seasonal daily mean" title="Seasonal daily mean" />
+
 _Figure 3_: Same data as in figure 2 but now split by season (see table 1), to give an idea how the different timeslices affect the distribution of the data.
 
 <img src="graphs/FFT.png" alt="Fast Fourier transform" title="Fast Fourier transform" />
+
 _Figure 4_: This figure shows the results of the fast Fourier transform analysis for each variable. On the left, it shows the twenty dominant frequencies lower than 30 days, on the right it shows the twenty dominant frequencies higher than 30 days. Note that the spectrums are normalised. This allows for easier comparison of dominant frequencies across the different time series.
 
 The plots for the consumer load profile FFTs are not given here, but can be found on [Github](https://github.com/merlijnk/timeslices/tree/main/graphs/consumer%20load%20profile%20FFTs). Compared to the other variables, the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent.
 
 <img src="graphs/Distribution.png" alt="Distribution" title="Distribution" />
+
 _Figure 5_: This figure shows an example of the distribution graphs, in this case for group season - weekday 1 - daynite (group D). The blue dot is the mean value, the smaller blue dots give the mean plus/minus the standard deviation. The red dot gives the median value, the red crosses give the minimum and maximum values, and the 10% and 90% percentiles.
 
 ## Conclusion and discussion
@@ -222,7 +217,7 @@ I suggest using the abbreviation 'L' for working days (**l**abour) and 'H' for w
 |            |                 | Day (D)   | WHD  | 4.61             |
 |            |                 | Peak (P)  | WHP  | 0.419            |
 
-_Table 19_: Annual share of the new proposed timeslices.
+_Table 10_: Annual share of the new proposed timeslices.
 
 The figure below shows the average hourly load for each season-weekday pair, with the mean load per daynite timeslice for the given season and weekday superimposed. It shows how the model simplifies the load data and to what extent it accurately summarises the data, given that the model does not currently capture variance (only mean values).
 
@@ -238,7 +233,7 @@ The data used covers seven years, which should give a good understanding of annu
 
 The best way to test the effect of new timeslices is to add them to the TIMES-CZ model. This is quite a labour intensive process, as other statistics also need to be updated. Some of this could be automated (using the data available, new scenario files for processes like EXPELCHIGGA and IMPELCHIGA could  be generated) but it would still require careful setting up of the relevant script, running the model, and analysing the model outputs.
 
-This has not been fully done yet for the proposed season - weekday 1 - daynite group (D) of timeslices, and thus further work is needed to explore the exact impacts on the model of using this new group. Currently, on the EUA-revision branch, I have added a new scenario file `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` which incorporates the seaon - weekday 1 - daynite group (D) with a corresponding `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx` scenario file which replaces `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx` (and ultimately, `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK.xlsx`). However, the temporal resolution of other key economic and energy statistics should also be improved to be able to accurately determine the effect of the new timeslices. 
+This has not been fully done yet for the proposed season - weekday 1 - daynite group (D) of timeslices, and thus further work is needed to explore the exact impacts on the model of using this new group. Currently, on the EUA-revision branch, I have added a new scenario file `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` which incorporates the seaon - weekday 1 - daynite group (D) with a corresponding `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd_AltTS.xlsx` scenario file which replaces `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK_TSprices_sumbnd.xlsx` (and ultimately, `CZ_V02-/SuppXLS/Scen_CZ_elcprice_SEK.xlsx`). However, the temporal resolution of other key economic and energy statistics should also be improved to be able to accurately determine the effect of the new timeslices (see the appendix). 
 
 As mentioned previously, many other timeslices remain unexplored. The data gathered suggests that perhaps the spring and autumn seasonal timeslices could be merged, as for some data points they show very similar means and distributions. Alternatively, they could be split and merged; creating an early-Spring/late-Autumn timeslice (capturing the onset/end of Winter) and an late-Spring/early-Autumn timeslice (capturing the onset/end of Summer). Furthermore, the current daynite timeslices could be expanded. The current definition of 'Night' lasting 12-hours appears to be too broad as the reduced demand does not last for so long, perhaps an alternative to the extended daynite timeslices discussed in this report. An alternative definition, extended daynite 3, is given in table 11.
 
@@ -259,6 +254,8 @@ Lastly, this report only considered electricity production and consumption. Othe
 
 
 ## Appendix: Consumer load profile extension
+
+The first application of the new timeslices was to add increased temporary resolution 
 
 The consumer load profile data is divided into the following categories:
 
@@ -312,7 +309,9 @@ Next I categorised all timeslice-dependent `COM_FR` processes listed in the `CZ_
 
 _Table 14_ The division of the processes into the various categories.
 
-Using the above combinations, I calculated the ratio of the categories per timeslice (the original data is normalised). I then inserted the various processes into the `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` scenario file with their category and annual total demand.
+Using the above combinations, I calculated the ratio of the categories per timeslice (the original data is normalised). I then inserted the various processes into the `CZ_V02-/SuppXLS/Scen_AltTS.xlsx` scenario file with their category and annual total demand. Using this scenario file does not lead to infeasibilities. 
+
+### Other processes and full process names
 
 There are twelve other `COM_FR` processes but I believe we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file).
 
@@ -375,3 +374,4 @@ _Table 15_ `COM_FR` processes that are not timeslice dependent.
 | ROEN         | Residential other energy generic                        | 4+5      |
 
 _Table 16_ Full name of the timeslice-dependent `COM_FR` processes.
+
