@@ -18,7 +18,7 @@ I am working on 'translating' some key functions from `python` to `R` (see `r-tr
 
 # Documentation
 
-This documentation was written for version `v0.2.0` of the code and updated for `v0.3.0`.
+This documentation was written for version `v0.2.0` of the code and updated for `v0.3.0`  with an appendix on consumer load profiles.
 
 ## Introduction
 
@@ -280,12 +280,10 @@ The TDD5 category is split in 8 regions. To get a value for this category, I too
 | Severní Čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1,237      | 0.12           |
 | Severní Morava | North Moravia   | Moravian-Silesian, Olomouc | 1,801      | 0.17           |
 | Střední Čechy  | Central Bohemia | Central Bohemia            | 1,387      | 0.13           |
-| Východní Čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1,05       | 0.10           |
+| Východní Čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1,050      | 0.10           |
 | Západní Čechy  | West Bohemia    | Karlovy Vary, Plzen        | 862        | 0.08           |
 
-_Table 13_: Division of Czech regions into the TDD5 regions (Population data from [ČSÚ](https://www.czso.cz/csu/czso/population-of-municipalities-1-january-2022)).
-
-==TODO CHECK POPULATION DATA==
+_Table 13_: Division of Czech regions into the TDD5 regions (Population data from [ČSÚ (2022)](https://www.czso.cz/csu/czso/population-of-municipalities-1-january-2022)).
 
 Furthermore, based on Lukáš' recommendation, I added a 'zero heating in summer' option (labeled 'a'), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (labeled 'b'), which reduces the residential lighting load profile (`RLIG`) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours. I also awarded some processes a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. TDD4 and TDD5 do differ slightly (TDD5 has consitently higher values during day and peak timeslices) but they exhibit a similar pattern overall.
 
