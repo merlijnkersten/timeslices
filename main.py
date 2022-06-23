@@ -25,7 +25,10 @@ GENERATION_PATH = os.path.join(data_path, 'generation 2015-2021.csv')
 PRICE_PATH = os.path.join(data_path, 'prices 2015-2021.csv')
 CROSS_BORDER_PATH = os.path.join(data_path, 'cross border 2015-2021.csv')
 CONSUMER_LOAD_PROFILE_PATH = os.path.join(data_path, 'consumer load profile 2015-2021.csv')
+
 DIRECTORY =  os.path.join(os.path.dirname(cwd), 'timeslices-output')
+if not os.path.exists(DIRECTORY):
+    os.makedirs(DIRECTORY)
 
 # Load data sets
 load_generation_df = load.load_generation(LOAD_PATH, GENERATION_PATH)

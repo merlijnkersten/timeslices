@@ -1,10 +1,10 @@
 # Preface
 
-*March-May 2022, merlijn*
+*March-June 2022, merlijn*
 
 All of the code used to import, analyse, and visualise the data in the report below can be found in this repository. There are two versions of the code. `v0.1.0` consists of some initial scripts used to create simple load duration graphs. It has limited functionality beyond producing load duration graphs based on the original season and daynite timeslices. This version was produced in April 2022.
 
-`v0.2.0` and `v0.3.0` brought a more fully-fledged suite of scripts with additional features and generalised functions. `v0.2.0` was used in the report below and was released in mid-May 2022. `v0.3.0` added UTC support and included consumer load profiles. The basic structure is as follows:
+`v0.2.0` (May 2022) and `v0.3.0` (June 2022) brought a more fully-fledged suite of scripts with additional features and generalised functions. `v0.2.0` was used in the report below and was released in mid-May 2022. `v0.3.0` added UTC support and included consumer load profiles. The basic structure is as follows:
 
 1. `load.py`: these functions are used to import and clean the data,
 2. `assign.py`: this script contains functions that assign the various timeslices to the time series,
@@ -15,16 +15,6 @@ All these functions can be run from the `main.py` file or individually in their 
 A fourth script, `report_visualisations.py`, listed in the `graphs` folder, contains some rough-and-ready code to generate some of the visualisations used in this report. 
 
 I am working on 'translating' some key functions from `python` to `R` (see `r-translation` branch), and on adding more comments to the code to explain its functionality. 
-
- /\/\/\/\/\/\/\/\/\/\
-
-Changes in 0.3.0:
-
-* Fixed date and time inconsistencies. The date and time columns of the data files are now converted to UTC, before they are converted into the Czech timezone (CET/CEST). This was done since ČEPS and OTE-ČR, from whom we source the data, both had different time and date methodologies (ČEPS used CET/CEST, OTE-ČR counted the hour of the day). This causes errors because the date and time column is set as index and is used to combine different data tables. The different methodologies created small errors at change from summer time to winter time and back. This is now fixed,
-* Added consumer load profile functionality. Added functions to load, assign, and analyse consumer load profiles to be able to increase the timeslice resolution of various economic processes (in `COM_FR`).
-* Improved FFT. Changed some of the fast Fourier transform functions to increase their temporal resolution.
-
-
 
 # Documentation
 
@@ -265,9 +255,7 @@ Lastly, this report only considered electricity production and consumption. Othe
 
 ## Appendix: Consumer load profile extension
 
-The first application of the new timeslices was to add increased temporary resolution 
-
-The consumer load profile data is divided into the following categories:
+The first application of the new timeslices was to add increased temporary resolution for commercial and residential `COM_FR` processes. This was done using consumer load profiles from  OTE-ČR. The consumer load profile data is divided into the following categories:
 
 | Category | Type        | Description (translated)                                                 |
 | -------- | ----------- | ------------------------------------------------------------------------ |
@@ -297,6 +285,8 @@ The TDD5 category is split in 8 regions. To get a value for this category, I too
 
 _Table 13_: Division of Czech regions into the TDD5 regions (Population data from [ČSÚ](https://www.czso.cz/csu/czso/population-of-municipalities-1-january-2022)).
 
+==TODO CHECK POPULATION DATA==
+
 Furthermore, based on Lukáš' recommendation, I added a 'zero heating in summer' option (labeled 'a'), which reduces the heating load profiles by 50% in autumn and spring and by 100% in summer. I also added a 'zero lighting in summer' option (labeled 'b'), which reduces the residential lighting load profile (`RLIG`) by 50% in autumn and spring, and by 100% in summer but only during day/peak hours. I also awarded some processes a combination of two load profiles. In these cases, the load profiles were averaged as they generally showed similar annual/seasonal variability. TDD4 and TDD5 do differ slightly (TDD5 has consitently higher values during day and peak timeslices) but they exhibit a similar pattern overall.
 
 Next I categorised all timeslice-dependent `COM_FR` processes listed in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file, see table 14 below. The full name of the processes can be found in table 16.
@@ -323,8 +313,6 @@ Using the above combinations, I calculated the ratio of the categories per times
 
 ### Other processes and full process names
 
-There are twelve other `COM_FR` processes but I believe we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file).
-
 | Abbreviation | Description             |
 | ------------ | ----------------------- |
 | TAV          | Aviation generic        |
@@ -340,8 +328,7 @@ There are twelve other `COM_FR` processes but I believe we cannot use consumer l
 | IFT          | Food and tobacco demand |
 | IOI          | Other industries demand |
 
-_Table 15_ `COM_FR` processes that are not timeslice dependent.
-
+_Table 15_ These are the remaining `COM_FR` processes. I believve that we cannot use consumer load profiles to determine their annual variability (and they do not occur in the `CZ_V02-/VT_CZ_RCA_V2.2.xlsx` file).
 
 | Abbreviation | Description                                             | Category |
 | ------------ | ------------------------------------------------------- | -------- |
@@ -383,5 +370,5 @@ _Table 15_ `COM_FR` processes that are not timeslice dependent.
 | ROEL         | Residential other electricity                           | 4+5      |
 | ROEN         | Residential other energy generic                        | 4+5      |
 
-_Table 16_ Full name of the timeslice-dependent `COM_FR` processes.
+_Table 16_ The full name of the timeslice-dependent `COM_FR` processes and their respective category.
 
