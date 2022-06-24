@@ -280,7 +280,7 @@ The TDD5 category is split in 8 regions. To get a value for this category, I too
 | Severní Čechy  | North Bohemia   | Liberec, Usti nad Labem    | 1,237      | 0.12           |
 | Severní Morava | North Moravia   | Moravian-Silesian, Olomouc | 1,801      | 0.17           |
 | Střední Čechy  | Central Bohemia | Central Bohemia            | 1,387      | 0.13           |
-| Východní Čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1,050      | 0.10           |
+| Východní Čechy | East Bohemia    | Hradec Kralove, Pardubice  | 1,058      | 0.10           |
 | Západní Čechy  | West Bohemia    | Karlovy Vary, Plzen        | 862        | 0.08           |
 
 _Table 13_: Division of Czech regions into the TDD5 regions (Population data from [ČSÚ (2022)](https://www.czso.cz/csu/czso/population-of-municipalities-1-january-2022)).
