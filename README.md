@@ -2,7 +2,7 @@
 
 *March-June 2022, merlijn*
 
-All of the code used to import, analyse, and visualise the data in the report below can be found in this repository. There are two versions of the code. `v0.1.0` consists of some initial scripts used to create simple load duration graphs. It has limited functionality beyond producing load duration graphs based on the original season and daynite timeslices. This version was produced in April 2022.
+All of the code used to import, analyse, and visualise the data in the report below can be found in [this repository](https://github.com/merlijnkersten/timeslices). There are two versions of the code. `v0.1.0` consists of some initial scripts used to create simple load duration graphs. It has limited functionality beyond producing load duration graphs based on the original season and daynite timeslices. This version was produced in April 2022.
 
 `v0.2.0` (May 2022) and `v0.3.0` (June 2022) brought a more fully-fledged suite of scripts with additional features and generalised functions. `v0.2.0` was used in the report below and was released in mid-May 2022. `v0.3.0` added UTC support and included consumer load profiles. The basic structure is as follows:
 
@@ -87,7 +87,7 @@ The data providers use different time and date definitions, see table 5. The ČE
 
 _Table 5_: Date time conventions of both data providers. 
 
-Some minor cleaning and reshaping actions were performed on the data (see `load.py`). This included calculating total generation, total import, total export, and net export. The consumer load profile data needed more extensive editing, please see the appendix for more information. The data sources were combined into a single data file, `combined 2015-2021.csv`, which can also be found in the data folder on the GitHub repository (see preface).
+Some minor cleaning and reshaping actions were performed on the data (see `load.py`). This included calculating total generation, total import, total export, and net export. The consumer load profile data needed more extensive editing, please see the appendix for more information. The data sources were combined into a single data file, `combined 2015-2021.csv`, which can also be found in the data folder on the GitHub repository.
 
 The load, import, export and price data were then categorised into the two original time slices (season daynite) and six new timeslices:
 
@@ -178,7 +178,7 @@ _Figure 3_: Same data as in figure 2 but now split by season (see table 1), to g
 
 _Figure 4_: This figure shows the results of the fast Fourier transform analysis for each variable. On the left, it shows the twenty dominant frequencies lower than 30 days, on the right it shows the twenty dominant frequencies higher than 30 days. Note that the spectrums are normalised. This allows for easier comparison of dominant frequencies across the different time series.
 
-The plots for the consumer load profile FFTs are not given here, but can be found on [Github](https://github.com/merlijnk/timeslices/tree/main/graphs/consumer%20load%20profile%20FFTs). Compared to the other variables, the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent.
+The plots for the consumer load profile FFTs are not given here, but can be found on [Github](https://github.com/merlijnkersten/timeslices/tree/main/graphs/consumer%20load%20profile%20FFTs). Compared to the other variables, the consumer load profiles feature much stronger dominant frequencies and therefore comparatively much weaker frequency spread. The dominant frequencies are daily, annually, and weekly; with intra-year frequencies being almost absent.
 
 <img src="graphs/Distribution.png" alt="Distribution" title="Distribution" />
 
